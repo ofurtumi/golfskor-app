@@ -2,3 +2,4 @@
 
 ## Hópur 
 - Þorvaldur Tumi Baldursson - [ofurtumi](https://github.com/ofurtumi)
+- Hákon Ingi Rafnsson - [hakoningir](https://github.com/hakoningir)
