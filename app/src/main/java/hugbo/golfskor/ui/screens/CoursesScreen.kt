@@ -1,10 +1,8 @@
-package hugbo.golfskor
+package hugbo.golfskor.ui.screens
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,22 +22,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import hugbo.golfskor.entities.Round
 import hugbo.golfskor.ui.theme.GolfskorTheme
 
-class CourseActivity: ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            GolfskorTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    GolfRoundList()
-                }
-            }
-        }
+@Composable
+fun CoursesScreen(navController: NavHostController) {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxSize()
+    ) {
+        GolfRoundList()
     }
 }
 
@@ -137,6 +131,13 @@ fun GolfRoundList (
                 modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
             )
             GolfRound(round)
+        }
+        item {
+            Divider(
+                color = MaterialTheme.colorScheme.secondary,
+                thickness = 1.dp,
+                modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
+            )
         }
     }
 }
