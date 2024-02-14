@@ -3,4 +3,6 @@
     <string name="auth_please_login">Vinsamlegast skráðu þig inn til að halda áfram</string>
     <string name="auth_login">Innskrá</string>
     <string name="auth_register">Nýskrá</string>
+    <string name="username">Notendanafn</string>
+    <string name="password">Lykilorð</string>
 </resources>

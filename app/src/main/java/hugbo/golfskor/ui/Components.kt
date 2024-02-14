@@ -1,11 +1,17 @@
 package hugbo.golfskor.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -15,39 +21,38 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import hugbo.golfskor.entities.Round
 import hugbo.golfskor.ui.theme.GolfskorTheme
 
 @Composable
-fun NavigationMenu(current: Int) {
-    val navController = rememberNavController()
-    Divider(
-        color = MaterialTheme.colorScheme.secondary,
-        thickness = 1.dp,
-        modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
-    )
+fun NavigationMenu(current: String = "Courses", navController: NavHostController) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Absolute.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
-            .fillMaxWidth()
-            .padding(16.dp, 8.dp)
+            .fillMaxWidth(),
+
     ) {
-        if (current == 0) {
-            Button(onClick = { /*TODO*/ }) {
+        if (current == "Courses") {
+            Button(onClick = { /*Todo*/ }) {
                 Text("Courses")
             }
-            OutlinedButton(onClick = { /*TODO*/ }) {
+            OutlinedButton(onClick = { navController.navigate("Profile") }) {
                 Text("Profile")
             }
         } else {
-            OutlinedButton(onClick = { /*TODO*/ }) {
+            OutlinedButton(onClick = { navController.navigate("Courses") }) {
                 Text("Courses")
             }
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { /*Todo*/ }) {
                 Text("Profile")
             }
         }
@@ -64,7 +69,7 @@ fun NavigationMenu(current: Int) {
 fun NavigationMenuPreviewCourses() {
     GolfskorTheme {
         Surface {
-            NavigationMenu(0)
+            NavigationMenu(navController = rememberNavController())
         }
     }
 }
@@ -79,7 +84,129 @@ fun NavigationMenuPreviewCourses() {
 fun NavigationMenuPreviewProfile() {
     GolfskorTheme {
         Surface {
-            NavigationMenu(1)
+            NavigationMenu("Profile", navController = rememberNavController())
+        }
+    }
+}
+
+
+@Composable
+fun GolfRound(round: Round = Round(), header: Boolean = false) {
+    GolfskorTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp, 8.dp)
+            ) {
+                if (header) {
+                    TextCollection(
+                        strings = listOf("Username", "Course", "Score"),
+                        style = TextStyle(fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary)
+                    )
+                } else {
+                    TextCollection(
+                        strings = listOf(
+                            round.getUsername(),
+                            round.getCourseName(),
+                            round.getScore().toString()
+                        )
+
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun GolfRoundPreview() {
+    GolfskorTheme {
+        Surface {
+            GolfRound()
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun GolfRoundHeaderPreview() {
+    GolfskorTheme {
+        Surface {
+            GolfRound(header = true)
+        }
+    }
+}
+
+@Composable
+fun TextCollection(
+    strings: List<String>,
+    modifier: Modifier = Modifier,
+    style: TextStyle = TextStyle(),
+    color: Color = Color.Unspecified) {
+    for (string in strings) {
+        Text(text = string, modifier = modifier, style = style, color = color)
+    }
+}
+
+@Composable
+fun GolfRoundList (
+    rounds: List<Round> = listOf(
+        Round(username = "Tester 1"),
+        Round(username = "Tester 2"),
+        Round(username = "Tester 3")
+    )) {
+    LazyColumn {
+        item {
+            GolfRound(header = true)
+        }
+        items(rounds) { round ->
+            Divider(
+                color = MaterialTheme.colorScheme.secondary,
+                thickness = 1.dp,
+                modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
+            )
+            GolfRound(round)
+        }
+        item {
+            Divider(
+                color = MaterialTheme.colorScheme.secondary,
+                thickness = 1.dp,
+                modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
+            )
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun GolfRoundListPreview() {
+    GolfskorTheme {
+        Surface {
+            GolfRoundList()
         }
     }
 }

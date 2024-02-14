@@ -1,7 +1,11 @@
 package hugbo.golfskor.entities
 
-class Round(private val id: Int = 0, private val courseName: String = "Test Course", private val username: String = "Tester") {
+class Round(
+    private val id: Int = 0,
+    private val courseName: String = "Test Course",
+    private val username: String = "Tester",
     private var holes: List<Int> = listOf()
+) {
 
     fun create(newHoles: List<Int> ): List<Int> {
         holes = newHoles
@@ -35,5 +39,10 @@ class Round(private val id: Int = 0, private val courseName: String = "Test Cour
 
     fun getHoles(): List<Int> {
         return holes
+    }
+
+    // ToString method for debugging
+    override fun toString(): String {
+        return "Round(id=$id, courseName='$courseName', username='$username', holes=$holes)"
     }
 }
