@@ -3,6 +3,7 @@ package hugbo.golfskor.ui.screens
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -36,7 +37,7 @@ import hugbo.golfskor.ui.viewModels.AuthenticateViewModel
 @Composable
 fun AuthenticateScreen(
     navController: NavHostController,
-    authViewModel: AuthenticateViewModel = viewModel()
+    authViewModel: AuthenticateViewModel = viewModel(),
 ) {
     val authUiState by authViewModel.uiState.collectAsState()
     val appName = stringResource(R.string.app_name)

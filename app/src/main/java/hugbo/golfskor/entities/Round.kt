@@ -1,23 +1,25 @@
 package hugbo.golfskor.entities
 
 class Round(
-    private val id: Int = 0,
+    private var id: Int = 0,
     private val courseName: String = "Test Course",
     private val username: String = "Tester",
-    private var holes: List<Int> = listOf()
+    private var holes: List<Int> = listOf(3,4,3,4,3,4,3,4,3)
 ) {
-
-    fun create(newHoles: List<Int> ): List<Int> {
-        holes = newHoles
-        return holes
-    }
-
     fun update(newHoles: List<Int> ): List<Int> {
         if (newHoles.size != holes.size) {
             throw IllegalArgumentException("New holes list must be the same size as the old one")
         }
         holes = newHoles
         return holes
+    }
+
+    fun setId(newId: Int) {
+        id = newId
+    }
+
+    fun getId(): Int {
+        return id
     }
 
     fun delete(): Boolean {
@@ -39,6 +41,10 @@ class Round(
 
     fun getHoles(): List<Int> {
         return holes
+    }
+
+    fun getHoleString(): String {
+        return holes.joinToString()
     }
 
     // ToString method for debugging

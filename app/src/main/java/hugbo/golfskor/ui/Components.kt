@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -22,14 +23,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import hugbo.golfskor.R
 import hugbo.golfskor.entities.Round
 import hugbo.golfskor.ui.theme.GolfskorTheme
+import hugbo.golfskor.ui.viewModels.ProfileViewModel
 
 @Composable
 fun NavigationMenu(current: String = "Courses", navController: NavHostController) {
@@ -91,40 +95,22 @@ fun NavigationMenuPreviewProfile() {
 
 
 @Composable
-fun GolfRound(round: Round = Round(), header: Boolean = false) {
+fun GolfRound(round: Round = Round()) {
     GolfskorTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
-                    .fillMaxWidth()
-                    .padding(16.dp, 8.dp)
-            ) {
-                if (header) {
-                    TextCollection(
-                        strings = listOf("Username", "Course", "Score"),
-                        style = TextStyle(fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary)
-                    )
-                } else {
-                    TextCollection(
-                        strings = listOf(
-                            round.getUsername(),
-                            round.getCourseName(),
-                            round.getScore().toString()
-                        )
+            TextCollection(
+                strings = listOf(
+                    round.getUsername(),
+                    round.getCourseName(),
+                    round.getScore().toString()
+                )
 
-                    )
-                }
-            }
+            )
         }
     }
 }
-
 
 @Preview(name = "Light Mode", showBackground = true)
 @Preview(
@@ -141,6 +127,17 @@ fun GolfRoundPreview() {
     }
 }
 
+@Composable
+fun GolfRoundHeader(strings: List<String>) {
+    TextCollection(
+        strings,
+        style = TextStyle(
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    )
+}
+
 @Preview(name = "Light Mode", showBackground = true)
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -151,7 +148,7 @@ fun GolfRoundPreview() {
 fun GolfRoundHeaderPreview() {
     GolfskorTheme {
         Surface {
-            GolfRound(header = true)
+            GolfRoundHeader(listOf("Username", "Course", "Score"))
         }
     }
 }
@@ -162,9 +159,29 @@ fun TextCollection(
     modifier: Modifier = Modifier,
     style: TextStyle = TextStyle(),
     color: Color = Color.Unspecified) {
-    for (string in strings) {
-        Text(text = string, modifier = modifier, style = style, color = color)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
+            .fillMaxWidth()
+            .padding(16.dp, 8.dp)
+    ) {
+        for (string in strings) {
+            Text(text = string, modifier = modifier, style = style, color = color)
+        }
     }
+}
+
+@Composable
+fun Line() {
+    Divider(
+        color = MaterialTheme.colorScheme.secondary,
+        thickness = 1.dp,
+        modifier = Modifier
+            .defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
+            .padding(0.dp, 8.dp)
+    )
 }
 
 @Composable
@@ -176,22 +193,14 @@ fun GolfRoundList (
     )) {
     LazyColumn {
         item {
-            GolfRound(header = true)
+            GolfRoundHeader(listOf("Username", "Course", "Score"))
         }
         items(rounds) { round ->
-            Divider(
-                color = MaterialTheme.colorScheme.secondary,
-                thickness = 1.dp,
-                modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
-            )
+            Line()
             GolfRound(round)
         }
         item {
-            Divider(
-                color = MaterialTheme.colorScheme.secondary,
-                thickness = 1.dp,
-                modifier = Modifier.defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
-            )
+            Line()
         }
     }
 }
@@ -207,6 +216,96 @@ fun GolfRoundListPreview() {
     GolfskorTheme {
         Surface {
             GolfRoundList()
+        }
+    }
+}
+
+@Composable
+fun ProfileGolfRound(
+    round: Round = Round(),
+    editAction: () -> Unit = { },
+    deleteAction: () -> Unit = { },
+    ) {
+    Column {
+        TextCollection(
+            listOf(
+                round.getCourseName(),
+                round.getHoleString(),
+                round.getScore().toString(),
+            )
+        )
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp, 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = deleteAction) {
+                Text(stringResource(R.string.delete))
+            }
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = editAction
+            ) { Text(stringResource(R.string.edit)) }
+        }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun ProfileGolfRoundPreview() {
+    GolfskorTheme {
+        Surface {
+            ProfileGolfRound()
+        }
+    }
+}
+
+@Composable
+fun ProfileGolfRoundList (
+    rounds: List<Round>,
+    editFun: (Int) -> Unit = { },
+    deleteFun: (Int) -> Unit = { }
+) {
+    LazyColumn {
+        item { GolfRoundHeader(listOf("Course", "Holes", "Score")) }
+        items(rounds) {
+            round ->
+            Line()
+            ProfileGolfRound(
+                round,
+                editAction = { editFun(round.getId()) },
+                deleteAction = { deleteFun(round.getId()) }
+            )
+        }
+        item { Line() }
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun ProfileGolfRoundListPreview() {
+    GolfskorTheme {
+        Surface {
+            ProfileGolfRoundList(
+                listOf(
+                    Round(id = 1, username = "Tester 1"),
+                    Round(id = 2, username = "Tester 2"),
+                    Round(id = 3, username = "Tester 3")
+                )
+            )
         }
     }
 }
