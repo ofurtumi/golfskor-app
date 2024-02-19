@@ -38,6 +38,14 @@ class User (
         rounds += newRound
     }
 
+    fun getTotalScore(): Int {
+        val totalScore = rounds.sumOf { it.getScore() }
+        if (totalScore <= 0) {
+            return 0
+        }
+        return totalScore
+    }
+
     override fun toString(): String {
         val roundString = rounds.joinToString("\n")
         return "User(id=$id, username='$username', authToken='$authToken', rounds='$roundString'"

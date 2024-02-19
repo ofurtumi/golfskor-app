@@ -23,7 +23,6 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     // this user should be gotten from api
     // TODO: Fetch user from api
     private val user: User = User(username = username, authToken = password)
-    // private var rounds by mutableStateOf(mutableListOf<Round>())
 
     init {
         // user = getUserFromApi(username, authToken)
@@ -32,7 +31,7 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             username = user.getUsername(),
             authToken = user.getToken(),
             rounds = user.getRounds(),
-            handicap = 0
+            handicap = calculateHandicap(user.getRounds()),
         )
     }
 
@@ -57,6 +56,7 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             it.copy(
                 rounds = newRounds,
                 handicap = calculateHandicap(newRounds),
+                totalScore = newRounds.sumOf { round -> round.getScore() }
             )
         }
     }
@@ -72,15 +72,16 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
         _uiState.update {
             it.copy(
+                rounds = newRounds,
                 handicap = calculateHandicap(newRounds),
-                rounds = newRounds
+                totalScore = newRounds.sumOf { round -> round.getScore() },
             )
         }
     }
 
-    private fun calculateHandicap(rounds: List<Round>): Int {
+    private fun calculateHandicap(rounds: List<Round>): Double {
         val scores = rounds.map {
-            if (it.getHoles().size > 9) {
+            if (it.getHoles().size <= 9) {
                 it.getScore() * 2
             } else {
                 it.getScore()
@@ -93,8 +94,11 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         if (average.size > 8) {
             average = average.subList(0, 9)
         }
-        Log.d("calculateHandicap", "$average")
-        return average.sum() / average.size
+        var score = 126.0
+        if (average.isNotEmpty()) {
+            score = (average.sum().toFloat() / average.size.toFloat()).toDouble()
+        }
+        return score - 72.0
     }
 
     fun deleteRound(id: Int) {
@@ -106,8 +110,9 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
         _uiState.update {
             it.copy(
+                rounds = newRounds,
                 handicap = calculateHandicap(newRounds),
-                rounds = newRounds
+                totalScore = newRounds.sumOf { round -> round.getScore() },
             )
         }
     }

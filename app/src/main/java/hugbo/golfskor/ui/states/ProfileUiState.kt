@@ -7,5 +7,6 @@ data class ProfileUiState (
     val username: String = "Test User",
     val authToken: String = "blaksdfjlaskdfjlaskdfjlaskdfjalskdfjlaskdfjlkasdjlkj",
     val rounds: List<Round> = listOf(),
-    val handicap: Int = 0
+    val handicap: Double = 54.0,
+    val totalScore: Int = 0
 )

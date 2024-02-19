@@ -8,6 +8,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -29,10 +30,12 @@ import androidx.navigation.navArgument
 import hugbo.golfskor.ui.screens.AuthenticateScreen
 import hugbo.golfskor.ui.screens.CoursesScreen
 import hugbo.golfskor.ui.screens.ProfileScreen
+import hugbo.golfskor.ui.screens.RoundScreen
 
 sealed class Screens(val route: String, val title: String, val icon: ImageVector) {
     data object Courses : Screens("Courses", "Vellir", Icons.Filled.LocationOn)
     data object Profile : Screens("Profile/{username}/{password}", "Prófíll", Icons.Filled.AccountCircle)
+    data object Rounds : Screens("Rounds", "Rounds", Icons.Filled.Add)
 }
 
 @Composable
@@ -43,7 +46,8 @@ fun Nav() {
 
     val screens: List<Screens> = listOf(
         Screens.Courses,
-        Screens.Profile
+        Screens.Profile,
+        Screens.Rounds
     )
 
     Scaffold(
@@ -78,10 +82,13 @@ fun Nav() {
     ) {
         innerPadding ->
         NavHost(navController = navController, startDestination = "Authenticate") {
+            composable(route = "Rounds") {
+                RoundScreen()
+            }
             composable(route = "Authenticate") {
                 AuthenticateScreen(navController = navController)
             }
-            composable(route = "Courses") { CoursesScreen(navController) }
+            composable(route = "Courses") { CoursesScreen() }
             composable(
                 route = "Profile/{username}/{password}",
                 arguments = listOf(

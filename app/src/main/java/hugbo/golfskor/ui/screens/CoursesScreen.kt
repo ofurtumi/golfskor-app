@@ -28,7 +28,7 @@ import hugbo.golfskor.ui.GolfRoundList
 import hugbo.golfskor.ui.theme.GolfskorTheme
 
 @Composable
-fun CoursesScreen(navController: NavHostController) {
+fun CoursesScreen() {
     Column (
         modifier = Modifier
             .fillMaxWidth()
