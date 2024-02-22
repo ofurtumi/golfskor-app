@@ -52,7 +52,6 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.padding(16.dp))
 
         Text(text = "Username: ${profileUiState.username}", fontSize = 24.sp)
-        Text(text = "Password: ${profileUiState.authToken}", fontSize = 24.sp)
 
         Spacer(modifier = Modifier.padding(16.dp))
 
@@ -71,7 +70,7 @@ fun ProfileScreen(
 }
 
 private fun roundHandicap(handicap: Double): String {
-    val df = DecimalFormat("#.##")
+    val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING
     return df.format(handicap).toString()
 }
@@ -90,7 +89,7 @@ fun ProfileGolfRound(
                 round.getScore().toString(),
             )
         )
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp, 0.dp),
@@ -98,7 +97,8 @@ fun ProfileGolfRound(
         ) {
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = deleteAction) {
+                onClick = deleteAction
+            ) {
                 Text(stringResource(R.string.delete))
             }
             Button(
@@ -125,15 +125,14 @@ fun ProfileGolfRoundPreview() {
 }
 
 @Composable
-fun ProfileGolfRoundList (
+fun ProfileGolfRoundList(
     rounds: List<Round>,
     editFun: (Int) -> Unit = { },
     deleteFun: (Int) -> Unit = { }
 ) {
     LazyColumn {
         item { GolfRoundHeader(listOf("Course", "Holes", "Score")) }
-        items(rounds) {
-                round ->
+        items(rounds) { round ->
             Line()
             ProfileGolfRound(
                 round,
