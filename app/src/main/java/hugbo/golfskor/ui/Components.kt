@@ -1,18 +1,13 @@
 package hugbo.golfskor.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -23,17 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import hugbo.golfskor.R
-import hugbo.golfskor.entities.Round
+import hugbo.golfskor.entities.ApiCourse
+import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.theme.GolfskorTheme
-import hugbo.golfskor.ui.viewModels.ProfileViewModel
 
 @Composable
 fun NavigationMenu(current: String = "Courses", navController: NavHostController) {
@@ -44,7 +37,7 @@ fun NavigationMenu(current: String = "Courses", navController: NavHostController
             .defaultMinSize(minWidth = 300.dp, minHeight = 1.dp)
             .fillMaxWidth(),
 
-    ) {
+        ) {
         if (current == "Courses") {
             Button(onClick = { /*Todo*/ }) {
                 Text("Courses")
@@ -95,16 +88,25 @@ fun NavigationMenuPreviewProfile() {
 
 
 @Composable
-fun GolfRound(round: Round = Round()) {
+fun GolfRound(
+    round: ApiRound = ApiRound(
+        1,
+        "Test Course",
+        "Tester",
+        listOf(1, 2, 3, 1, 2, 3, 1, 2, 3),
+        18
+    )
+) {
     GolfskorTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
+
             TextCollection(
                 strings = listOf(
-                    round.getUsername(),
-                    round.getCourseName(),
-                    round.getScore().toString()
+                    round.username,
+                    round.courseName,
+                    round.score.toString()
                 )
 
             )
@@ -158,7 +160,8 @@ fun TextCollection(
     strings: List<String>,
     modifier: Modifier = Modifier,
     style: TextStyle = TextStyle(),
-    color: Color = Color.Unspecified) {
+    color: Color = Color.Unspecified
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -185,16 +188,14 @@ fun Line() {
 }
 
 @Composable
-fun GolfRoundList (
-    rounds: List<Round> = listOf(
-        Round(username = "Tester 1"),
-        Round(username = "Tester 2"),
-        Round(username = "Tester 3")
-    )) {
+fun GolfRoundList(
+    rounds: List<ApiRound> = listOf(
+        ApiRound(1, "Test Course", "Tester 1", listOf(1, 2, 3, 1, 2, 3, 1, 2, 3), 18),
+        ApiRound(1, "Test Course", "Tester 2", listOf(1, 2, 3, 1, 2, 3, 1, 2, 3), 18),
+        ApiRound(1, "Test Course", "Tester 3", listOf(1, 2, 3, 1, 2, 3, 1, 2, 3), 18),
+    )
+) {
     LazyColumn {
-        item {
-            GolfRoundHeader(listOf("Username", "Course", "Score"))
-        }
         items(rounds) { round ->
             Line()
             GolfRound(round)
@@ -216,6 +217,28 @@ fun GolfRoundListPreview() {
     GolfskorTheme {
         Surface {
             GolfRoundList()
+        }
+    }
+}
+
+@Composable
+fun GolfCourseList(courses: List<ApiCourse>) {
+    LazyColumn {
+        items(courses) { course ->
+            Text(text = course.courseName)
+            GolfRoundHeader(strings = listOf("Spilari", "Holur", "Skor"))
+            for (round in course.rounds) {
+                Line()
+                TextCollection(
+                    strings = listOf(
+                        round.username,
+                        round.holes.joinToString(", "),
+                        round.score.toString()
+                    )
+
+                )
+            }
+            Line()
         }
     }
 }
