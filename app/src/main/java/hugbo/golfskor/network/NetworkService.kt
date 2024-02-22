@@ -25,6 +25,12 @@ interface NetworkService {
         @Query("username") username: String,
         @Query("password") password: String
     ): ApiAuth
+
+    @POST("api/user/register")
+    suspend fun register(
+        @Query("username") username: String,
+        @Query("password") password: String
+    )
 }
 
 object GolfSkorApi {
