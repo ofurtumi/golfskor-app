@@ -105,7 +105,7 @@ fun Nav() {
                     username = backStackEntry.arguments?.getString("username") ?: ""
                     password = backStackEntry.arguments?.getString("password") ?: ""
                 }
-                ProfileScreen(innerPadding)
+                ProfileScreen(innerPadding, navController = navController)
             }
         }
     }
