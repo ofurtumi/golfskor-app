@@ -10,9 +10,9 @@ import hugbo.golfskor.network.GolfSkorApi
 import kotlinx.coroutines.launch
 
 sealed interface AuthUiState {
-    object Loading : AuthUiState
+    data object Loading : AuthUiState
     data class Success(val auth: ApiAuth) : AuthUiState
-    object Registered : AuthUiState
+    data object Registered : AuthUiState
     data class Error(val message: String) : AuthUiState
 
 }
