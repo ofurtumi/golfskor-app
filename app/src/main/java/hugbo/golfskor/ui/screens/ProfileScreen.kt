@@ -1,6 +1,5 @@
 package hugbo.golfskor.ui.screens
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,24 +11,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import hugbo.golfskor.R
-import hugbo.golfskor.entities.Round
+import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.GolfRoundHeader
 import hugbo.golfskor.ui.Line
 import hugbo.golfskor.ui.TextCollection
-import hugbo.golfskor.ui.theme.GolfskorTheme
+import hugbo.golfskor.ui.viewModels.ProfileUiState
 import hugbo.golfskor.ui.viewModels.ProfileViewModel
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -38,34 +35,43 @@ import java.text.DecimalFormat
 fun ProfileScreen(
     innerPadding: PaddingValues,
     profileViewModel: ProfileViewModel = viewModel(),
+    navController: NavController
 ) {
-    val profileUiState by profileViewModel.uiState.collectAsState()
+    val profileUiState = profileViewModel.profileUiState
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
-        Text(text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}", fontSize = 54.sp)
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        when (profileUiState) {
+            is ProfileUiState.Loading -> {
+                Text(text = "Sæki gögn", fontSize = 24.sp)
+            }
 
-        Text(text = "Username: ${profileUiState.username}", fontSize = 24.sp)
+            is ProfileUiState.Success -> {
+                Text(text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}", fontSize = 54.sp)
+                Spacer(modifier = Modifier.padding(16.dp))
+                Text(text = "Username: ${profileUiState.userInfo.username}", fontSize = 24.sp)
+                Spacer(modifier = Modifier.padding(16.dp))
+                ProfileGolfRoundList(
+                    rounds = profileUiState.userInfo.rounds,
+                    editFun = { id -> navController.navigate("Round/${profileUiState.userInfo.username}/${profileUiState.authToken}/${id}") },
+                    deleteFun = { id -> navController.navigate("Round/${profileUiState.userInfo.username}/${profileUiState.authToken}/${id}") },
+                )
+            }
 
-        Spacer(modifier = Modifier.padding(16.dp))
-
-        Button(onClick = { profileViewModel.addRound() }) {
-            Text("Log Userinfo")
+            is ProfileUiState.Error -> {
+                Text(
+                    text = "Villa: ${profileUiState.message}",
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.padding(16.dp))
-
-        ProfileGolfRoundList(
-            rounds = profileUiState.rounds,
-            editFun = { id -> profileViewModel.editRound(id) },
-            deleteFun = { id -> profileViewModel.deleteRound(id) }
-        )
     }
 }
 
@@ -77,16 +83,16 @@ private fun roundHandicap(handicap: Double): String {
 
 @Composable
 fun ProfileGolfRound(
-    round: Round = Round(),
+    round: ApiRound,
     editAction: () -> Unit = { },
     deleteAction: () -> Unit = { },
 ) {
     Column {
         TextCollection(
             listOf(
-                round.getCourseName(),
-                round.getHoleString(),
-                round.getScore().toString(),
+                round.courseName,
+                round.holes.joinToString(", "),
+                round.score.toString(),
             )
         )
         Row(
@@ -109,24 +115,10 @@ fun ProfileGolfRound(
     }
 }
 
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Composable
-fun ProfileGolfRoundPreview() {
-    GolfskorTheme {
-        Surface {
-            ProfileGolfRound()
-        }
-    }
-}
 
 @Composable
 fun ProfileGolfRoundList(
-    rounds: List<Round>,
+    rounds: List<ApiRound>,
     editFun: (Int) -> Unit = { },
     deleteFun: (Int) -> Unit = { }
 ) {
@@ -136,31 +128,10 @@ fun ProfileGolfRoundList(
             Line()
             ProfileGolfRound(
                 round,
-                editAction = { editFun(round.getId()) },
-                deleteAction = { deleteFun(round.getId()) }
+                editAction = { editFun(round.id) },
+                deleteAction = { deleteFun(round.id) }
             )
         }
         item { Line() }
-    }
-}
-
-@Preview(name = "Light Mode", showBackground = true)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Composable
-fun ProfileGolfRoundListPreview() {
-    GolfskorTheme {
-        Surface {
-            ProfileGolfRoundList(
-                listOf(
-                    Round(id = 1, username = "Tester 1"),
-                    Round(id = 2, username = "Tester 2"),
-                    Round(id = 3, username = "Tester 3")
-                )
-            )
-        }
     }
 }

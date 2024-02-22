@@ -16,6 +16,7 @@ fun CoursesScreen(
     courseViewModel: CourseViewModel = viewModel()
 ) {
     val courseUiState = courseViewModel.courseUiState
+
     Column {
         Button(onClick = { courseViewModel.refresh() }) {
             Text(text = "Sækja aftur")
