@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Golfskor</string>
     <string name="auth_please_login">Vinsamlegast skráðu þig inn til að halda áfram</string>
+    <string name="auth_error">Villa kom upp við innskráningu, vinsamlegast reyndu aftur</string>
+    <string name="auth_registered">Notandi skráður</string>
     <string name="auth_login">Innskrá</string>
     <string name="auth_register">Nýskrá</string>
     <string name="username">Notendanafn</string>
