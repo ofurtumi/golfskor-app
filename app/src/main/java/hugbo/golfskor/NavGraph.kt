@@ -1,7 +1,5 @@
 package hugbo.golfskor
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -34,7 +32,9 @@ import hugbo.golfskor.ui.screens.RoundScreen
 
 sealed class Screens(val route: String, val title: String, val icon: ImageVector) {
     data object Courses : Screens("Courses", "Vellir", Icons.Filled.LocationOn)
-    data object Profile : Screens("Profile/{username}/{password}", "Prófíll", Icons.Filled.AccountCircle)
+    data object Profile :
+        Screens("Profile/{username}/{password}", "Prófíll", Icons.Filled.AccountCircle)
+
     data object Rounds : Screens("Rounds", "Rounds", Icons.Filled.Add)
 }
 
@@ -79,8 +79,7 @@ fun Nav() {
                 }
             }
         }
-    ) {
-        innerPadding ->
+    ) { innerPadding ->
         NavHost(navController = navController, startDestination = "Authenticate") {
             composable(route = "Rounds") {
                 RoundScreen()
@@ -88,7 +87,9 @@ fun Nav() {
             composable(route = "Authenticate") {
                 AuthenticateScreen(navController = navController)
             }
-            composable(route = "Courses") { CoursesScreen() }
+            composable(route = "Courses") {
+                CoursesScreen()
+            }
             composable(
                 route = "Profile/{username}/{password}",
                 arguments = listOf(
