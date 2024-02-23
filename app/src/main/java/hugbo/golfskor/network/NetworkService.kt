@@ -3,6 +3,7 @@ package hugbo.golfskor.network
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import hugbo.golfskor.entities.ApiAuth
 import hugbo.golfskor.entities.ApiCourse
+import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.entities.ApiUserInfo
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -14,7 +15,8 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://golfskor.onrender.com"
+private const val BASE_URL = "https://golfskor.onrender.com" // Production
+// private const val BASE_URL = "http://10.0.2.2:8080"          // Localhost
 
 val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.HEADERS
@@ -53,6 +55,19 @@ interface NetworkService {
         @Query("username") username: String,
         @Header("Authorization") authToken: String
     ): ApiUserInfo
+
+    @GET("api/getround")
+    suspend fun getRound(
+        @Query("id") roundId: Int,
+    ): ApiRound
+
+    @POST("api/round")
+    suspend fun postRound(
+        @Query("courseId") courseId: Int,
+        @Query("holes") holes: List<Int>,
+        @Query("userId") username: Int,
+        @Header("Authorization") authToken: String
+    ): ApiRound
 }
 
 object GolfSkorApi {
