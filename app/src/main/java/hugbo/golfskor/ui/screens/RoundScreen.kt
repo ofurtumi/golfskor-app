@@ -67,7 +67,7 @@ fun RoundScreen(
                 Text(roundUiState.round.toString())
             }
 
-            is RoundUiState.Error -> ErrorScreen(roundUiState.message)
+            is RoundUiState.Error -> LoadingScreen()
         }
     }
 }

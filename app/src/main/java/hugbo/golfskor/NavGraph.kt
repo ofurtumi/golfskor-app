@@ -76,7 +76,7 @@ fun Nav(
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                restoreState = screen.route != "Courses"
+                                // restoreState = screen.route != "Courses"
                             }
                         }
                     )
