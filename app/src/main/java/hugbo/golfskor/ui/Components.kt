@@ -1,6 +1,7 @@
 package hugbo.golfskor.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -8,13 +9,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,11 +30,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import hugbo.golfskor.entities.ApiCourse
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.theme.GolfskorTheme
+import hugbo.golfskor.ui.viewModels.CourseUiState
+import hugbo.golfskor.ui.viewModels.NavUiState
 
 @Composable
 fun NavigationMenu(current: String = "Courses", navController: NavHostController) {
@@ -222,10 +235,19 @@ fun GolfRoundListPreview() {
 }
 
 @Composable
-fun GolfCourseList(courses: List<ApiCourse>) {
+fun GolfCourseList(
+    state: CourseUiState.Success,
+    navController: NavController,
+    navUiState: NavUiState
+) {
     LazyColumn {
-        items(courses) { course ->
-            Text(text = course.courseName)
+        items(state.courses) { course ->
+            Row {
+                Text(text = course.courseName)
+                Button(onClick = { navController.navigate("Rounds/new/${course.id}/${navUiState.username}/${navUiState.userId}/${navUiState.authToken}") }) {
+
+                }
+            }
             GolfRoundHeader(strings = listOf("Spilari", "Holur", "Skor"))
             for (round in course.rounds) {
                 Line()
@@ -239,6 +261,36 @@ fun GolfCourseList(courses: List<ApiCourse>) {
                 )
             }
             Line()
+        }
+    }
+}
+
+@Composable
+fun BottomNav(links: List<String>, navController: NavController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    BottomNavigation {
+        links.forEachIndexed { index, screen ->
+            val icon = if (index == 0) {
+                Icons.Filled.LocationOn
+            } else {
+                Icons.Filled.AccountCircle
+            }
+            BottomNavigationItem(
+                modifier = Modifier.background(color = androidx.compose.material.MaterialTheme.colors.primary),
+                icon = { Icon(imageVector = icon, contentDescription = icon.name) },
+                selected = currentDestination?.hierarchy?.any { it.route == screen } == true,
+                onClick = {
+                    navController.navigate(screen) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }
