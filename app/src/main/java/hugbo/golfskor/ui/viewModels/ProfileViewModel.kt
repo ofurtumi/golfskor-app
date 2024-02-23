@@ -4,87 +4,62 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import hugbo.golfskor.entities.Round
-import hugbo.golfskor.entities.User
-import hugbo.golfskor.ui.states.ProfileUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import hugbo.golfskor.entities.ApiRound
+import hugbo.golfskor.network.GolfSkorApi
+import kotlinx.coroutines.launch
+
+sealed interface ProfileUiState {
+    data object Loading : ProfileUiState
+    data class Success(
+        val rounds: List<ApiRound>,
+        val handicap: Double,
+        val username: String,
+        val userId: Int,
+        val authToken: String
+    ) : ProfileUiState
+
+    data class Error(val message: String) : ProfileUiState
+}
 
 class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
-   private val _uiState = MutableStateFlow(ProfileUiState())
-   val uiState: StateFlow<ProfileUiState> = _uiState
-
     private val username: String = savedStateHandle.get<String>("username") ?: ""
-    private val password: String = savedStateHandle.get<String>("password") ?: ""
-    // this user should be gotten from api
-    // TODO: Fetch user from api
-    private val user: User = User(username = username, authToken = password)
+    private val authToken: String = savedStateHandle.get<String>("authToken") ?: ""
+
+    var profileUiState: ProfileUiState by mutableStateOf(ProfileUiState.Loading)
+        private set
 
     init {
-        // user = getUserFromApi(username, authToken)
-        _uiState.value = ProfileUiState(
-            id = user.getId(),
-            username = user.getUsername(),
-            authToken = user.getToken(),
-            rounds = user.getRounds(),
-            handicap = calculateHandicap(user.getRounds()),
-        )
+        getProfileRounds(username, authToken)
     }
 
-    fun addRound() {
-        var id = 1
-        if (_uiState.value.rounds.isNotEmpty()) {
-            id = _uiState.value.rounds.last().getId() + 1
-        }
-        val newRound = Round(
-            id = id,
-            courseName = "Test Course 2",
-            username = uiState.value.username,
-            holes = listOf(3, 4, 5, 4, 3, 4, 5, 4, 3)
-        )
-
-        Log.d("addRound", "$newRound")
-
-        val newRounds = uiState.value.rounds.toMutableList()
-        newRounds.add(newRound)
-
-        _uiState.update {
-            it.copy(
-                rounds = newRounds,
-                handicap = calculateHandicap(newRounds),
-                totalScore = newRounds.sumOf { round -> round.getScore() }
-            )
-        }
-    }
-
-    fun editRound(id: Int) {
-        val newRounds = uiState.value.rounds.toMutableList()
-
-        newRounds.map {round ->
-            if (round.getId() == id) {
-                round.update(round.getHoles().map { it + 1 })
+    fun getProfileRounds(username: String, authToken: String) {
+        viewModelScope.launch {
+            profileUiState = try {
+                Log.d("Authorization", "Bearer $authToken")
+                val userInfoResult =
+                    GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
+                ProfileUiState.Success(
+                    userInfoResult.rounds,
+                    calculateHandicap(userInfoResult.rounds),
+                    username,
+                    userInfoResult.id,
+                    authToken
+                )
+            } catch (e: Exception) {
+                ProfileUiState.Error("Error: ${e.message}")
             }
         }
-
-        _uiState.update {
-            it.copy(
-                rounds = newRounds,
-                handicap = calculateHandicap(newRounds),
-                totalScore = newRounds.sumOf { round -> round.getScore() },
-            )
-        }
     }
 
-    private fun calculateHandicap(rounds: List<Round>): Double {
+    private fun calculateHandicap(rounds: List<ApiRound>): Double {
         val scores = rounds.map {
-            if (it.getHoles().size <= 9) {
-                it.getScore() * 2
+            if (it.holes.size <= 9) {
+                it.score * 2
             } else {
-                it.getScore()
+                it.score
             }
         }
         var average = scores.sorted()
@@ -99,21 +74,5 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             score = (average.sum().toFloat() / average.size.toFloat()).toDouble()
         }
         return score - 72.0
-    }
-
-    fun deleteRound(id: Int) {
-        // Should call the api
-        // Todo: Delete round from api
-        val newRounds = uiState.value.rounds.toMutableList()
-
-        newRounds.removeIf { it.getId() == id }
-
-        _uiState.update {
-            it.copy(
-                rounds = newRounds,
-                handicap = calculateHandicap(newRounds),
-                totalScore = newRounds.sumOf { round -> round.getScore() },
-            )
-        }
     }
 }
