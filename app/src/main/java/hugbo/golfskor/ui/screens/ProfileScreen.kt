@@ -26,6 +26,7 @@ import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.GolfRoundHeader
 import hugbo.golfskor.ui.Line
 import hugbo.golfskor.ui.TextCollection
+import hugbo.golfskor.ui.viewModels.NavViewModel
 import hugbo.golfskor.ui.viewModels.ProfileUiState
 import hugbo.golfskor.ui.viewModels.ProfileViewModel
 import java.math.RoundingMode
@@ -34,8 +35,9 @@ import java.text.DecimalFormat
 @Composable
 fun ProfileScreen(
     innerPadding: PaddingValues,
+    navController: NavController,
+    navViewModel: NavViewModel,
     profileViewModel: ProfileViewModel = viewModel(),
-    navController: NavController
 ) {
     val profileUiState = profileViewModel.profileUiState
 
@@ -46,7 +48,6 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-
         when (profileUiState) {
             is ProfileUiState.Loading -> {
                 Text(text = "Sæki gögn", fontSize = 24.sp)
@@ -55,20 +56,24 @@ fun ProfileScreen(
             is ProfileUiState.Success -> {
                 Text(text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}", fontSize = 54.sp)
                 Spacer(modifier = Modifier.padding(16.dp))
-                Text(text = "Username: ${profileUiState.userInfo.username}", fontSize = 24.sp)
+                Text(text = "Username: ${profileUiState.username}", fontSize = 24.sp)
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(
-                    rounds = profileUiState.userInfo.rounds,
-                    editFun = { id -> navController.navigate("Round/${profileUiState.userInfo.username}/${profileUiState.authToken}/${id}") },
-                    deleteFun = { id -> navController.navigate("Round/${profileUiState.userInfo.username}/${profileUiState.authToken}/${id}") },
+                    rounds = profileUiState.rounds,
+                    editFun = { /* TODO */ },
+                    deleteFun = { /* TODO */ },
                 )
             }
 
             is ProfileUiState.Error -> {
                 Text(
-                    text = "Villa: ${profileUiState.message}",
+                    text = "Sæki holur",
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.error
+                )
+                profileViewModel.getProfileRounds(
+                    navViewModel.navUiState.username,
+                    navViewModel.navUiState.authToken
                 )
             }
         }
