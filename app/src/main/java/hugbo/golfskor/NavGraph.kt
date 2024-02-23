@@ -29,6 +29,7 @@ import hugbo.golfskor.ui.screens.AuthenticateScreen
 import hugbo.golfskor.ui.screens.CoursesScreen
 import hugbo.golfskor.ui.screens.ProfileScreen
 import hugbo.golfskor.ui.screens.RoundScreen
+import hugbo.golfskor.ui.viewModels.NavViewModel
 
 sealed class Screens(val route: String, val title: String, val icon: ImageVector) {
     data object Courses : Screens("Courses", "Vellir", Icons.Filled.LocationOn)
@@ -39,15 +40,18 @@ sealed class Screens(val route: String, val title: String, val icon: ImageVector
 }
 
 @Composable
-fun Nav() {
+fun Nav(
+    navViewModel: NavViewModel = remember { NavViewModel() }
+) {
     val navController = rememberNavController()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val navUiState = navViewModel.navUiState
+
     val screens: List<Screens> = listOf(
         Screens.Courses,
         Screens.Profile,
-        Screens.Rounds
     )
 
     Scaffold(
@@ -72,7 +76,7 @@ fun Nav() {
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                restoreState = true
+                                restoreState = screen.route != "Courses"
                             }
                         }
                     )
@@ -81,31 +85,52 @@ fun Nav() {
         }
     ) { innerPadding ->
         NavHost(navController = navController, startDestination = "Authenticate") {
-            composable(route = "Rounds") {
-                RoundScreen()
-            }
-            composable(route = "Authenticate") {
-                AuthenticateScreen(navController = navController)
-            }
-            composable(route = "Courses") {
-                CoursesScreen()
-            }
-            composable(
-                route = "Profile/{username}/{password}",
+            composable(route = "Rounds/{type}/{id}/{username}/{userId}/{authToken}",
                 arguments = listOf(
+                    navArgument(name = "type") {
+                        type = NavType.StringType
+                    },
+                    navArgument(name = "id") {
+                        type = NavType.IntType
+                    },
                     navArgument(name = "username") {
                         type = NavType.StringType
                     },
-                    navArgument(name = "password") {
+                    navArgument(name = "userId") {
+                        type = NavType.IntType
+                    },
+                    navArgument(name = "authToken") {
                         type = NavType.StringType
                     }
+                )) { RoundScreen(innerPadding, navController, navViewModel) }
+            composable(route = "Authenticate") {
+                AuthenticateScreen(
+                    innerPadding,
+                    navController,
+                    navViewModel
                 )
-            ) { backStackEntry ->
+            }
+            composable(route = "Courses") {
+                CoursesScreen(
+                    innerPadding,
+                    navController,
+                    navViewModel
+                )
+            }
+            composable(route = "Profile/{username}/{authToken}", arguments = listOf(
+                navArgument("username") { type = NavType.StringType },
+                navArgument("authToken") { type = NavType.StringType }
+            )) { backStackEntry ->
                 if (username == "" && password == "") {
-                    username = backStackEntry.arguments?.getString("username") ?: ""
-                    password = backStackEntry.arguments?.getString("password") ?: ""
+                    username = backStackEntry.arguments?.getString("username").toString()
+                    password = backStackEntry.arguments?.getString("authToken").toString()
                 }
-                ProfileScreen(innerPadding, navController = navController)
+
+                ProfileScreen(
+                    innerPadding,
+                    navController,
+                    navViewModel
+                )
             }
         }
     }
