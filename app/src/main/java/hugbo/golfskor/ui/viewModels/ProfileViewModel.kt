@@ -8,15 +8,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.entities.ApiRound
-import hugbo.golfskor.entities.ApiUserInfo
 import hugbo.golfskor.network.GolfSkorApi
 import kotlinx.coroutines.launch
 
 sealed interface ProfileUiState {
     data object Loading : ProfileUiState
     data class Success(
-        val userInfo: ApiUserInfo,
+        val rounds: List<ApiRound>,
         val handicap: Double,
+        val username: String,
+        val userId: Int,
         val authToken: String
     ) : ProfileUiState
 
@@ -25,7 +26,7 @@ sealed interface ProfileUiState {
 
 class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     private val username: String = savedStateHandle.get<String>("username") ?: ""
-    private val authToken: String = savedStateHandle.get<String>("password") ?: ""
+    private val authToken: String = savedStateHandle.get<String>("authToken") ?: ""
 
     var profileUiState: ProfileUiState by mutableStateOf(ProfileUiState.Loading)
         private set
@@ -37,12 +38,14 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     fun getProfileRounds(username: String, authToken: String) {
         viewModelScope.launch {
             profileUiState = try {
-                Log.d("Autherization", "Bearer $authToken")
+                Log.d("Authorization", "Bearer $authToken")
                 val userInfoResult =
                     GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
                 ProfileUiState.Success(
-                    userInfoResult,
+                    userInfoResult.rounds,
                     calculateHandicap(userInfoResult.rounds),
+                    username,
+                    userInfoResult.id,
                     authToken
                 )
             } catch (e: Exception) {
@@ -50,50 +53,6 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
         }
     }
-
-    // fun addRound() {
-    //     var id = 1
-    //     if (_uiState.value.rounds.isNotEmpty()) {
-    //         id = _uiState.value.rounds.last().getId() + 1
-    //     }
-    //     val newRound = Round(
-    //         id = id,
-    //         courseName = "Test Course 2",
-    //         username = uiState.value.username,
-    //         holes = listOf(3, 4, 5, 4, 3, 4, 5, 4, 3)
-    //     )
-
-    //     Log.d("addRound", "$newRound")
-
-    //     val newRounds = uiState.value.rounds.toMutableList()
-    //     newRounds.add(newRound)
-
-    //     _uiState.update {
-    //         it.copy(
-    //             rounds = newRounds,
-    //             handicap = calculateHandicap(newRounds),
-    //             totalScore = newRounds.sumOf { round -> round.getScore() }
-    //         )
-    //     }
-    // }
-
-    // fun editRound(id: Int) {
-    //     val newRounds = uiState.value.rounds.toMutableList()
-
-    //     newRounds.map { round ->
-    //         if (round.getId() == id) {
-    //             round.update(round.getHoles().map { it + 1 })
-    //         }
-    //     }
-
-    //     _uiState.update {
-    //         it.copy(
-    //             rounds = newRounds,
-    //             handicap = calculateHandicap(newRounds),
-    //             totalScore = newRounds.sumOf { round -> round.getScore() },
-    //         )
-    //     }
-    // }
 
     private fun calculateHandicap(rounds: List<ApiRound>): Double {
         val scores = rounds.map {
@@ -116,20 +75,4 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         }
         return score - 72.0
     }
-
-    // fun deleteRound(id: Int) {
-    //     // Should call the api
-    //     // Todo: Delete round from api
-    //     val newRounds = uiState.value.rounds.toMutableList()
-
-    //     newRounds.removeIf { it.getId() == id }
-
-    //     _uiState.update {
-    //         it.copy(
-    //             rounds = newRounds,
-    //             handicap = calculateHandicap(newRounds),
-    //             totalScore = newRounds.sumOf { round -> round.getScore() },
-    //         )
-    //     }
-    // }
 }
