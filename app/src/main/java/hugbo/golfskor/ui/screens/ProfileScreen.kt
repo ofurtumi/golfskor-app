@@ -51,6 +51,10 @@ fun ProfileScreen(
         when (profileUiState) {
             is ProfileUiState.Loading -> {
                 Text(text = "Sæki gögn", fontSize = 24.sp)
+                profileViewModel.getProfileRounds(
+                    navViewModel.navUiState.username,
+                    navViewModel.navUiState.authToken
+                )
             }
 
             is ProfileUiState.Success -> {
@@ -70,10 +74,6 @@ fun ProfileScreen(
                     text = "Sæki holur",
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.error
-                )
-                profileViewModel.getProfileRounds(
-                    navViewModel.navUiState.username,
-                    navViewModel.navUiState.authToken
                 )
             }
         }

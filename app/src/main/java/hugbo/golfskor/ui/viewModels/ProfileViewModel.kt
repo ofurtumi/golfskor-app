@@ -32,7 +32,7 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         private set
 
     init {
-        getProfileRounds(username, authToken)
+        //getProfileRounds(username, authToken)
     }
 
     fun getProfileRounds(username: String, authToken: String) {
