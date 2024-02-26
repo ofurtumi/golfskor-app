@@ -245,7 +245,10 @@ fun GolfCourseList(
             Row {
                 Text(text = course.courseName)
                 Button(onClick = { navController.navigate("Rounds/new/${course.id}/${navUiState.username}/${navUiState.userId}/${navUiState.authToken}") }) {
-
+                    Text(text = "9 Holur")
+                }
+                Button(onClick = { navController.navigate("Rounds/newBig/${course.id}/${navUiState.username}/${navUiState.userId}/${navUiState.authToken}") }) {
+                    Text(text = "18 Holur")
                 }
             }
             GolfRoundHeader(strings = listOf("Spilari", "Holur", "Skor"))

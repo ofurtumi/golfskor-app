@@ -54,7 +54,10 @@ class RoundViewModel(
             roundUiState = try {
                 if (roundType == "new") {
                     RoundUiState.NewRound(listOf(1, 1, 1, 1, 1, 1, 1, 1, 1), username, authToken)
-                } else {
+                } else if (roundType == "newBig"){
+                        RoundUiState.NewRound(listOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), username, authToken)
+                }
+                else {
                     val oldRound =
                         GolfSkorApi.retrofitService.getRound(roundId)
                     RoundUiState.OldRound(oldRound, username, authToken)
