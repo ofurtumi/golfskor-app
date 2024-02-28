@@ -1,5 +1,6 @@
 package hugbo.golfskor.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,11 +15,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import hugbo.golfskor.R
@@ -26,19 +30,33 @@ import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.GolfRoundHeader
 import hugbo.golfskor.ui.Line
 import hugbo.golfskor.ui.TextCollection
+import hugbo.golfskor.ui.viewModels.NavUiState
 import hugbo.golfskor.ui.viewModels.NavViewModel
 import hugbo.golfskor.ui.viewModels.ProfileUiState
 import hugbo.golfskor.ui.viewModels.ProfileViewModel
+import kotlinx.coroutines.delay
 import java.math.RoundingMode
 import java.text.DecimalFormat
+
+fun rememberUIState(navUiState: NavUiState): SavedStateHandle {
+    val savedStateHandle = SavedStateHandle()
+    savedStateHandle["userId"] = navUiState.userId
+    savedStateHandle["authToken"] = navUiState.authToken
+    return savedStateHandle;
+}
 
 @Composable
 fun ProfileScreen(
     innerPadding: PaddingValues,
     navController: NavController,
     navViewModel: NavViewModel,
-    profileViewModel: ProfileViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel() {
+        ProfileViewModel(
+            savedStateHandle = rememberUIState(navViewModel.navUiState),
+        )
+    }
 ) {
+
     val profileUiState = profileViewModel.profileUiState
 
     Column(
@@ -56,6 +74,16 @@ fun ProfileScreen(
                     navViewModel.navUiState.authToken
                 )
             }
+            is ProfileUiState.Deleting -> {
+                Text(text = "Eyði færslu, augnablik", fontSize = 24.sp)
+                LaunchedEffect(key1 = Unit) {
+                    delay(500)
+                    profileViewModel.getProfileRounds(
+                        navViewModel.navUiState.username,
+                        navViewModel.navUiState.authToken
+                    )
+                }
+            }
 
             is ProfileUiState.Success -> {
                 Text(text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}", fontSize = 54.sp)
@@ -65,13 +93,13 @@ fun ProfileScreen(
                 ProfileGolfRoundList(
                     rounds = profileUiState.rounds,
                     editFun = { /* TODO */ },
-                    deleteFun = { /* TODO */ },
+                    deleteFun = { roundId -> profileViewModel.deleteRound(roundId) }
                 )
             }
 
             is ProfileUiState.Error -> {
                 Text(
-                    text = "Sæki holur",
+                    text = "Villa átti sér stað...",
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.error
                 )

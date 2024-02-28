@@ -8,11 +8,18 @@ import hugbo.golfskor.entities.ApiUserInfo
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://golfskor.onrender.com" // Production
@@ -68,6 +75,19 @@ interface NetworkService {
         @Query("userId") username: Int,
         @Header("Authorization") authToken: String
     ): ApiRound
+
+    @DELETE("api/round")
+    suspend fun deleteRound(
+        @Header("Authorization") authToken: String,
+        @Query("roundId") roundId: Int,
+        @Query("userId") userId: Int
+    ): Response<Void>
+
+    //@HTTP(method = "DELETE", path = "/api/round", hasBody = true)
+    //suspend fun deleteRound(
+    //    @Header("Authorization") authToken: String,
+    //    @Body roundId: Int
+    //): Response<Void>
 }
 
 object GolfSkorApi {

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 sealed interface ProfileUiState {
     data object Loading : ProfileUiState
+    data object Deleting : ProfileUiState
     data class Success(
         val rounds: List<ApiRound>,
         val handicap: Double,
@@ -25,6 +26,7 @@ sealed interface ProfileUiState {
 }
 
 class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+    private val userId = savedStateHandle.get<Int>("userId") ?: -1;
     private val username: String = savedStateHandle.get<String>("username") ?: ""
     private val authToken: String = savedStateHandle.get<String>("authToken") ?: ""
 
@@ -74,5 +76,28 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             score = (average.sum().toFloat() / average.size.toFloat()).toDouble()
         }
         return score - 72.0
+    }
+
+    fun deleteRound(roundId: Int) {
+        Log.d("Deleting by roundId",  "$roundId")
+        viewModelScope.launch {
+
+            profileUiState = try {
+                Log.d("Deleting by roundId",  "$roundId")
+                println("asdf")
+                 val result = GolfSkorApi.retrofitService.deleteRound(
+                     "Bearer $authToken",
+                     roundId,
+                     userId,
+                 )
+                // TODO eyda round ur oldstate og skila
+                ProfileUiState.Deleting
+
+
+            } catch (e: Exception) {
+                Log.e("Error deleting round", "$roundId", e)
+                ProfileUiState.Error("Villa við að eyða :'(")
+            }
+        }
     }
 }
