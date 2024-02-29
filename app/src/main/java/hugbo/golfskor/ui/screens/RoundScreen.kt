@@ -48,6 +48,7 @@ fun RoundScreen(
         when (roundUiState) {
             is RoundUiState.Loading -> LoadingScreen()
 
+
             is RoundUiState.NewRound -> {
                 var holes by remember(roundUiState.holes) { mutableStateOf(roundUiState.holes) }
 
@@ -62,11 +63,19 @@ fun RoundScreen(
                 }
             }
             is RoundUiState.OldRound -> {
-                Text(roundUiState.username)
-                Text(roundUiState.authToken)
-                Text(roundUiState.round.toString())
-            }
+                var holes by remember(roundUiState.round.holes) { mutableStateOf(roundUiState.round.holes) }
 
+                ChooseHoles(holes, onHoleChange = { holes = it }) {
+
+                    Button(onClick = {
+                        roundViewModel.updateRound(holes, roundUiState.round.id)
+                        navController.navigate("Profile/${roundUiState.username}/${roundUiState.authToken}")
+                    }) {
+                        Text("Create Round")
+                    }
+                }
+            }
+            is RoundUiState.Success -> LoadingScreen()
             is RoundUiState.Error -> LoadingScreen()
         }
     }

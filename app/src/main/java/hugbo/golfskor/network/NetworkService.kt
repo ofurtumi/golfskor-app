@@ -8,22 +8,18 @@ import hugbo.golfskor.entities.ApiUserInfo
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.HTTP
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://golfskor.onrender.com" // Production
-// private const val BASE_URL = "http://10.0.2.2:8080"          // Localhost
+//private const val BASE_URL = "https://golfskor.onrender.com" // Production
+private const val BASE_URL = "http://10.0.2.2:8080"          // Localhost
 
 val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.HEADERS
@@ -66,6 +62,14 @@ interface NetworkService {
     @GET("api/getround")
     suspend fun getRound(
         @Query("id") roundId: Int,
+    ): ApiRound
+
+    @PATCH("api/round")
+    suspend fun updateRound(
+        @Query("roundId") roundId: Int,
+        @Query("holes") holes: List<Int>,
+        @Query("userId") userId: Int,
+        @Header("Authorization") authToken: String
     ): ApiRound
 
     @POST("api/round")
