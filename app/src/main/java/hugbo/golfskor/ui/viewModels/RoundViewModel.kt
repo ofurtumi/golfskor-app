@@ -15,10 +15,9 @@ sealed interface RoundUiState {
     data class Loading(val username: String, val userId: Int, val authToken: String) : RoundUiState
     data class NewRound(val holes: List<Int>, val username: String, val authToken: String) :
         RoundUiState
-
     data class OldRound(val round: ApiRound, val username: String, val authToken: String) :
         RoundUiState
-
+    data class Success(val message: String): RoundUiState
     data class Error(val message: String) : RoundUiState
 }
 
@@ -68,6 +67,22 @@ class RoundViewModel(
         }
     }
 
+    fun updateRound(holes: List<Int>, roundId: Int){
+        viewModelScope.launch {
+            roundUiState = try {
+                Log.d("Holes", holes.joinToString())
+                val round = GolfSkorApi.retrofitService.updateRound(
+                    roundId,
+                    holes,
+                    userId,
+                    "Bearer $authToken"
+                )
+                RoundUiState.Success("Tókst að breyta hring")
+            } catch (e: Exception) {
+                RoundUiState.Error("Error: ${e.message}")
+            }
+        }
+    }
     fun postRound(holes: List<Int>) {
         viewModelScope.launch {
             roundUiState = try {
@@ -78,7 +93,7 @@ class RoundViewModel(
                     userId,
                     "Bearer $authToken"
                 )
-                RoundUiState.OldRound(round, username, authToken)
+                RoundUiState.Success("Tókst að skrá hring")
             } catch (e: Exception) {
                 RoundUiState.Error("Error: ${e.message}")
             }

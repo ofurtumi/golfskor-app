@@ -22,6 +22,13 @@ sealed interface ProfileUiState {
         val authToken: String
     ) : ProfileUiState
 
+    data class RoundUpdateRequest(
+        val courseId: Int,
+        val holes: List<Int>,
+        val userId: Int,
+        val authToken: String,
+    )
+
     data class Error(val message: String) : ProfileUiState
 }
 

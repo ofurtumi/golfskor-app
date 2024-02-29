@@ -92,7 +92,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(
                     rounds = profileUiState.rounds,
-                    editFun = { /* TODO */ },
+                    editFun = {roundid -> navController.navigate("Rounds/old/${roundid}/${navViewModel.navUiState.username}/${navViewModel.navUiState.userId}/${navViewModel.navUiState.authToken}") },
                     deleteFun = { roundId -> profileViewModel.deleteRound(roundId) }
                 )
             }
@@ -152,7 +152,7 @@ fun ProfileGolfRound(
 @Composable
 fun ProfileGolfRoundList(
     rounds: List<ApiRound>,
-    editFun: (Int) -> Unit = { },
+    editFun: (Int) -> Unit,
     deleteFun: (Int) -> Unit = { }
 ) {
     LazyColumn {
