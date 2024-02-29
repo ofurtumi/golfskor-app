@@ -18,8 +18,8 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-//private const val BASE_URL = "https://golfskor.onrender.com" // Production
-private const val BASE_URL = "http://10.0.2.2:8080"          // Localhost
+private const val BASE_URL = "https://golfskor.onrender.com" // Production
+//private const val BASE_URL = "http://10.0.2.2:8080"          // Localhost
 
 val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.HEADERS
