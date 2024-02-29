@@ -90,9 +90,7 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                      roundId,
                      userId,
                  )
-                // TODO eyda round ur oldstate og skila
                 ProfileUiState.Deleting
-
 
             } catch (e: Exception) {
                 Log.e("Error deleting round", "$roundId", e)

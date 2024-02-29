@@ -82,12 +82,6 @@ interface NetworkService {
         @Query("roundId") roundId: Int,
         @Query("userId") userId: Int
     ): Response<Void>
-
-    //@HTTP(method = "DELETE", path = "/api/round", hasBody = true)
-    //suspend fun deleteRound(
-    //    @Header("Authorization") authToken: String,
-    //    @Body roundId: Int
-    //): Response<Void>
 }
 
 object GolfSkorApi {
