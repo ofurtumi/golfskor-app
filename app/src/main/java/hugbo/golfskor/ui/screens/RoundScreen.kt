@@ -37,6 +37,7 @@ fun RoundScreen(
     roundViewModel: RoundViewModel = viewModel()
 ) {
     val roundUiState = roundViewModel.roundUiState
+    val navUiState = navViewModel.navUiState
 
     Column(
         modifier = Modifier
@@ -46,7 +47,15 @@ fun RoundScreen(
         verticalArrangement = Arrangement.Top
     ) {
         when (roundUiState) {
-            is RoundUiState.Loading -> LoadingScreen()
+            is RoundUiState.Loading -> {
+                LoadingScreen()
+                roundViewModel.getRoundOfType(
+                    navUiState.username,
+                    navUiState.authToken,
+                    roundUiState.roundType,
+                    roundUiState.roundId
+                )
+            }
 
 
             is RoundUiState.NewRound -> {
@@ -55,7 +64,7 @@ fun RoundScreen(
                 ChooseHoles(holes, onHoleChange = { holes = it })
                 {
                     Button(onClick = {
-                        roundViewModel.postRound(holes)
+                        roundViewModel.postRound(holes, navUiState.userId, navUiState.authToken)
                         navController.navigate("Profile")
                     }) {
                         Text("Create Round")
@@ -69,7 +78,12 @@ fun RoundScreen(
                 ChooseHoles(holes, onHoleChange = { holes = it }) {
 
                     Button(onClick = {
-                        roundViewModel.updateRound(holes, roundUiState.round.id)
+                        roundViewModel.updateRound(
+                            holes,
+                            roundUiState.round.id,
+                            navUiState.userId,
+                            navUiState.authToken
+                        )
                         navController.navigate("Profile")
                     }) {
                         Text("Create Round")

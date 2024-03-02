@@ -67,7 +67,6 @@ fun Nav(
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                // restoreState = screen.route != "Courses"
                             }
                         }
                     )
@@ -76,22 +75,13 @@ fun Nav(
         }
     ) { innerPadding ->
         NavHost(navController = navController, startDestination = "Authenticate") {
-            composable(route = "Rounds/{type}/{id}/{username}/{userId}/{authToken}",
+            composable(route = "Rounds/{type}/{id}",
                 arguments = listOf(
                     navArgument(name = "type") {
                         type = NavType.StringType
                     },
                     navArgument(name = "id") {
                         type = NavType.IntType
-                    },
-                    navArgument(name = "username") {
-                        type = NavType.StringType
-                    },
-                    navArgument(name = "userId") {
-                        type = NavType.IntType
-                    },
-                    navArgument(name = "authToken") {
-                        type = NavType.StringType
                     }
                 )) { RoundScreen(innerPadding, navController, navViewModel) }
             composable(route = "Authenticate") {
