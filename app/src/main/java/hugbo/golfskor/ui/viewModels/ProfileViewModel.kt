@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.entities.ApiRound
@@ -32,11 +31,7 @@ sealed interface ProfileUiState {
     data class Error(val message: String) : ProfileUiState
 }
 
-class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
-    private val userId = savedStateHandle.get<Int>("userId") ?: -1;
-    private val username: String = savedStateHandle.get<String>("username") ?: ""
-    private val authToken: String = savedStateHandle.get<String>("authToken") ?: ""
-
+class ProfileViewModel : ViewModel() {
     var profileUiState: ProfileUiState by mutableStateOf(ProfileUiState.Loading)
         private set
 
@@ -85,18 +80,18 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         return score - 72.0
     }
 
-    fun deleteRound(roundId: Int) {
-        Log.d("Deleting by roundId",  "$roundId")
+    fun deleteRound(roundId: Int, userId: Int, authToken: String) {
+        Log.d("Deleting by roundId", "$roundId")
         viewModelScope.launch {
 
             profileUiState = try {
-                Log.d("Deleting by roundId",  "$roundId")
+                Log.d("Deleting by roundId", "$roundId")
                 println("asdf")
-                 val result = GolfSkorApi.retrofitService.deleteRound(
-                     "Bearer $authToken",
-                     roundId,
-                     userId,
-                 )
+                val result = GolfSkorApi.retrofitService.deleteRound(
+                    "Bearer $authToken",
+                    roundId,
+                    userId,
+                )
                 ProfileUiState.Deleting
 
             } catch (e: Exception) {
