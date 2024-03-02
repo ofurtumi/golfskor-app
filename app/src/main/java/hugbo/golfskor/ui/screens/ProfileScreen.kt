@@ -78,7 +78,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(
                     rounds = profileUiState.rounds,
-                    editFun = { roundid -> navController.navigate("Rounds/old/${roundid}/${navViewModel.navUiState.username}/${navViewModel.navUiState.userId}/${navViewModel.navUiState.authToken}") },
+                    editFun = { roundId -> navController.navigate("Rounds/old/${roundId}/${navViewModel.navUiState.username}/${navViewModel.navUiState.userId}/${navViewModel.navUiState.authToken}") },
                     deleteFun = { roundId ->
                         profileViewModel.deleteRound(
                             roundId,
