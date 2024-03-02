@@ -6,7 +6,6 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -35,8 +34,6 @@ sealed class Screens(val route: String, val title: String, val icon: ImageVector
     data object Courses : Screens("Courses", "Vellir", Icons.Filled.LocationOn)
     data object Profile :
         Screens("Profile/{username}/{password}", "Prófíll", Icons.Filled.AccountCircle)
-
-    data object Rounds : Screens("Rounds", "Rounds", Icons.Filled.Add)
 }
 
 @Composable
@@ -46,8 +43,6 @@ fun Nav(
     val navController = rememberNavController()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    val navUiState = navViewModel.navUiState
 
     val screens: List<Screens> = listOf(
         Screens.Courses,

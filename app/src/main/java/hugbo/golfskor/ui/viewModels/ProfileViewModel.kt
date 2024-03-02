@@ -35,10 +35,6 @@ class ProfileViewModel : ViewModel() {
     var profileUiState: ProfileUiState by mutableStateOf(ProfileUiState.Loading)
         private set
 
-    init {
-        //getProfileRounds(username, authToken)
-    }
-
     fun getProfileRounds(username: String, authToken: String) {
         viewModelScope.launch {
             profileUiState = try {
