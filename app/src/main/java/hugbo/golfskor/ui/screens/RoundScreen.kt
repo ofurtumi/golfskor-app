@@ -56,12 +56,13 @@ fun RoundScreen(
                 {
                     Button(onClick = {
                         roundViewModel.postRound(holes)
-                        navController.navigate("Profile/${roundUiState.username}/${roundUiState.authToken}")
+                        navController.navigate("Profile")
                     }) {
                         Text("Create Round")
                     }
                 }
             }
+
             is RoundUiState.OldRound -> {
                 var holes by remember(roundUiState.round.holes) { mutableStateOf(roundUiState.round.holes) }
 
@@ -69,12 +70,13 @@ fun RoundScreen(
 
                     Button(onClick = {
                         roundViewModel.updateRound(holes, roundUiState.round.id)
-                        navController.navigate("Profile/${roundUiState.username}/${roundUiState.authToken}")
+                        navController.navigate("Profile")
                     }) {
                         Text("Create Round")
                     }
                 }
             }
+
             is RoundUiState.Success -> LoadingScreen()
             is RoundUiState.Error -> LoadingScreen()
         }
@@ -82,7 +84,11 @@ fun RoundScreen(
 }
 
 @Composable
-fun ChooseHoles(holes: List<Int>, onHoleChange: (List<Int>) -> Unit, content: @Composable () -> Unit) {
+fun ChooseHoles(
+    holes: List<Int>,
+    onHoleChange: (List<Int>) -> Unit,
+    content: @Composable () -> Unit
+) {
     LazyColumn {
         itemsIndexed(holes) { i, hole ->
             Row(

@@ -11,9 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -33,7 +31,7 @@ import hugbo.golfskor.ui.viewModels.NavViewModel
 sealed class Screens(val route: String, val title: String, val icon: ImageVector) {
     data object Courses : Screens("Courses", "Vellir", Icons.Filled.LocationOn)
     data object Profile :
-        Screens("Profile/{username}/{password}", "Prófíll", Icons.Filled.AccountCircle)
+        Screens("Profile", "Prófíll", Icons.Filled.AccountCircle)
 }
 
 @Composable
@@ -41,8 +39,6 @@ fun Nav(
     navViewModel: NavViewModel = remember { NavViewModel() }
 ) {
     val navController = rememberNavController()
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
 
     val screens: List<Screens> = listOf(
         Screens.Courses,
@@ -112,15 +108,7 @@ fun Nav(
                     navViewModel
                 )
             }
-            composable(route = "Profile/{username}/{authToken}", arguments = listOf(
-                navArgument("username") { type = NavType.StringType },
-                navArgument("authToken") { type = NavType.StringType }
-            )) { backStackEntry ->
-                if (username == "" && password == "") {
-                    username = backStackEntry.arguments?.getString("username").toString()
-                    password = backStackEntry.arguments?.getString("authToken").toString()
-                }
-
+            composable(route = "Profile") { backStackEntry ->
                 ProfileScreen(
                     innerPadding,
                     navController,

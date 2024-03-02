@@ -77,7 +77,7 @@ fun AuthenticateScreen(
                     authUiState.auth.id,
                     authUiState.auth.authToken
                 )
-                navController.navigate("Profile/${authUiState.auth.username}/${authUiState.auth.authToken}")
+                navController.navigate("Profile")
             }
 
             is AuthUiState.Registered -> {
