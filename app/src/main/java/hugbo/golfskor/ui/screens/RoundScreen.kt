@@ -26,12 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.NavViewModel
 import hugbo.golfskor.ui.viewModels.RoundUiState
 import hugbo.golfskor.ui.viewModels.RoundViewModel
+
+val paddingValues = PaddingValues(16.dp, 4.dp)
 
 @Composable
 fun RoundScreen(
@@ -64,37 +67,29 @@ fun RoundScreen(
             is RoundUiState.NewRound -> {
                 var holes by remember(roundUiState.holes) { mutableStateOf(roundUiState.holes) }
 
-                ChooseHoles(holes, onHoleChange = { holes = it })
-                {
-                    Button(onClick = {
-                        roundViewModel.postRound(
-                            holes,
-                            navViewModel.navUiState.userId,
-                            navViewModel.navUiState.authToken
-                        )
-                        navController.navigate("Profile")
-                    }) {
-                        Text(roundUiState.buttonText)
-                    }
+                ChooseHoles(holes, { holes = it }, roundUiState.buttonText) {
+                    roundViewModel.postRound(
+                        holes,
+                        navViewModel.navUiState.userId,
+                        navViewModel.navUiState.authToken
+                    )
+                    navController.navigate("Profile")
                 }
             }
 
             is RoundUiState.OldRound -> {
                 var holes by remember(roundUiState.round.holes) { mutableStateOf(roundUiState.round.holes) }
 
-                ChooseHoles(holes, onHoleChange = { holes = it }) {
-                    Button(onClick = {
-                        roundViewModel.updateRound(
-                            holes,
-                            roundUiState.round.id,
-                            navViewModel.navUiState.userId,
-                            navViewModel.navUiState.authToken
-                        )
-                        navController.navigate("Profile")
-                    }) {
-                        Text(roundUiState.buttonText)
-                    }
+                ChooseHoles(holes, { holes = it }, roundUiState.buttonText) {
+                    roundViewModel.updateRound(
+                        holes,
+                        roundUiState.round.id,
+                        navViewModel.navUiState.userId,
+                        navViewModel.navUiState.authToken
+                    )
+                    navController.navigate("Profile")
                 }
+
             }
 
             is RoundUiState.Success -> LoadingScreen()
@@ -107,17 +102,23 @@ fun RoundScreen(
 fun ChooseHoles(
     holes: List<Int>,
     onHoleChange: (List<Int>) -> Unit,
-    content: @Composable () -> Unit
+    submitText: String,
+    onSubmit: () -> Unit
 ) {
     LazyColumn {
         itemsIndexed(holes) { i, hole ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(paddingValues),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                Text(
+                    "${i + 1}.",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
                 UpdateHoleButton(
                     "-1"
                 ) {
@@ -135,9 +136,10 @@ fun ChooseHoles(
                 }
 
                 Text(
-                    "Hole ${i + 1}: $hole",
+                    "$hole",
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
                 )
 
                 UpdateHoleButton(
@@ -158,8 +160,19 @@ fun ChooseHoles(
             }
         }
         item {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                content()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(onClick = onSubmit, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = submitText,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.background
+                    )
+                }
             }
         }
     }
@@ -186,10 +199,15 @@ fun UpdateHoleButton(text: String, callBack: () -> Unit) {
     name = "Dark Mode"
 )
 @Composable
-fun UpdateHoleButtonPreview() {
+fun ChooseHolesPreview() {
     GolfskorTheme {
         Surface {
-            UpdateHoleButton("+1") {}
+            ChooseHoles(
+                holes = List(9) { 1 },
+                onHoleChange = { },
+                onSubmit = {},
+                submitText = "Submit"
+            )
         }
     }
 }
