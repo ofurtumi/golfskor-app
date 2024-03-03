@@ -74,7 +74,7 @@ fun RoundScreen(
                         )
                         navController.navigate("Profile")
                     }) {
-                        Text("Create Round")
+                        Text(roundUiState.buttonText)
                     }
                 }
             }
@@ -83,7 +83,6 @@ fun RoundScreen(
                 var holes by remember(roundUiState.round.holes) { mutableStateOf(roundUiState.round.holes) }
 
                 ChooseHoles(holes, onHoleChange = { holes = it }) {
-
                     Button(onClick = {
                         roundViewModel.updateRound(
                             holes,
@@ -93,7 +92,7 @@ fun RoundScreen(
                         )
                         navController.navigate("Profile")
                     }) {
-                        Text("Create Round")
+                        Text(roundUiState.buttonText)
                     }
                 }
             }
@@ -159,7 +158,9 @@ fun ChooseHoles(
             }
         }
         item {
-            content()
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                content()
+            }
         }
     }
 }

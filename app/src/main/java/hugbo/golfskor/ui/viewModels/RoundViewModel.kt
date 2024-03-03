@@ -19,13 +19,15 @@ sealed interface RoundUiState {
     data class NewRound(
         val holes: List<Int>,
         val username: String,
-        val authToken: String
+        val authToken: String,
+        val buttonText: String
     ) : RoundUiState
 
     data class OldRound(
         val round: ApiRound,
         val username: String,
-        val authToken: String
+        val authToken: String,
+        val buttonText: String
     ) : RoundUiState
 
     data class Success(
@@ -61,17 +63,17 @@ class RoundViewModel(
             roundUiState = try {
                 when (roundType) {
                     "new" -> {
-                        RoundUiState.NewRound(List(9) { 1 }, username, authToken)
+                        RoundUiState.NewRound(List(9) { 1 }, username, authToken, "Skrá hring")
                     }
 
                     "big" -> {
-                        RoundUiState.NewRound(List(18) { 1 }, username, authToken)
+                        RoundUiState.NewRound(List(18) { 1 }, username, authToken, "Skrá hring")
                     }
 
                     else -> {
                         val oldRound =
                             GolfSkorApi.retrofitService.getRound(roundId)
-                        RoundUiState.OldRound(oldRound, username, authToken)
+                        RoundUiState.OldRound(oldRound, username, authToken, "Uppfæra hring")
                     }
                 }
             } catch (e: Exception) {
