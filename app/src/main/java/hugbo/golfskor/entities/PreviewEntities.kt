@@ -1,15 +1,19 @@
 package hugbo.golfskor.entities
 
+import kotlin.math.abs
+import kotlin.random.Random
+
 /**
  * This class is used to preview the data that is used in the app
  */
-fun previewRound(): ApiRound {
+fun previewRound(big: Boolean = false): ApiRound {
+    val holes = List(if (big) 18 else 9) { abs(Random.nextInt() % 4) + 1 }
     return ApiRound(
         1,
         "Test Course",
         "Tester",
-        listOf(1, 2, 3, 1, 2, 3, 1, 2, 3),
-        18
+        holes,
+        holes.sum()
     )
 }
 
@@ -18,6 +22,6 @@ fun previewCourse(): ApiCourse {
         1,
         "Test Course",
         List(9) { 1 },
-        List(3) { previewRound() }
+        listOf(previewRound(), previewRound(true), previewRound())
     )
 }
