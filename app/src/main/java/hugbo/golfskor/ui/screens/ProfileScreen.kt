@@ -113,10 +113,17 @@ fun ProfileGolfRound(
     deleteAction: () -> Unit = { },
 ) {
     Column {
+        var holes = round.holes.joinToString(", ")
+        if (round.holes.size > 9) {
+            holes =
+                round.holes.subList(0, 9).joinToString(", ") +
+                        "\n" +
+                        round.holes.subList(9, round.holes.size).joinToString(", ")
+        }
         TextCollection(
             listOf(
                 round.courseName,
-                round.holes.joinToString(", "),
+                holes,
                 round.score.toString(),
             )
         )
