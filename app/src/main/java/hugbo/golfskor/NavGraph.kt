@@ -3,11 +3,11 @@ package hugbo.golfskor
 import androidx.compose.foundation.background
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,11 +54,17 @@ fun Nav(
                 return@Scaffold
             }
 
-            BottomNavigation {
+            BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
                 screens.forEach { screen ->
                     BottomNavigationItem(
-                        modifier = Modifier.background(color = MaterialTheme.colors.primary),
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.primary),
+                        icon = {
+                            Icon(
+                                screen.icon,
+                                contentDescription = screen.title,
+                                tint = MaterialTheme.colorScheme.background
+                            )
+                        },
                         label = { screen.title },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
@@ -98,7 +104,7 @@ fun Nav(
                     navViewModel
                 )
             }
-            composable(route = "Profile") { backStackEntry ->
+            composable(route = "Profile") {
                 ProfileScreen(
                     innerPadding,
                     navController,
