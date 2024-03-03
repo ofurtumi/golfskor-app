@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import hugbo.golfskor.ui.GolfCourseList
 import hugbo.golfskor.ui.viewModels.CourseUiState
 import hugbo.golfskor.ui.viewModels.CourseViewModel
-import hugbo.golfskor.ui.viewModels.NavUiState
 import hugbo.golfskor.ui.viewModels.NavViewModel
 
 @Composable
@@ -44,7 +43,6 @@ fun CoursesScreen(
             is CourseUiState.Success -> ResultScreen(
                 courseUiState,
                 navController,
-                navViewModel.navUiState
             )
 
             is CourseUiState.Error -> ErrorScreen(courseUiState.message)
@@ -66,7 +64,6 @@ fun LoadingScreen() {
 fun ResultScreen(
     state: CourseUiState.Success,
     navController: NavController,
-    navUiState: NavUiState
 ) {
-    GolfCourseList(state, navController, navUiState)
+    GolfCourseList(state, navController)
 }
