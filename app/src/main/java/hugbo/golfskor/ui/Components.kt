@@ -160,7 +160,6 @@ fun GolfRoundListPreview() {
 fun GolfCourseList(
     state: CourseUiState.Success,
     navController: NavController,
-    navUiState: NavUiState
 ) {
     LazyColumn {
         items(state.courses) { course ->
@@ -185,11 +184,18 @@ fun GolfCourseList(
             }
             GolfRoundHeader(strings = listOf("Spilari", "Holur", "Skor"))
             for (round in course.rounds) {
+                var holes = round.holes.joinToString(", ")
+                if (round.holes.size > 9) {
+                    holes =
+                        round.holes.subList(0, 9).joinToString(", ") +
+                        "\n" +
+                        round.holes.subList(9, round.holes.size).joinToString(", ")
+                }
                 Line()
                 TextCollection(
                     strings = listOf(
                         round.username,
-                        round.holes.joinToString(", "),
+                        holes,
                         round.score.toString()
                     )
 
@@ -218,7 +224,6 @@ fun GolfCourseListPreview() {
                     courses = List(2) { previewCourse() }
                 ),
                 navController = rememberNavController(),
-                navUiState = NavUiState("Tester", 1, "testToken")
             )
         }
     }
