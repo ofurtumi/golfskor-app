@@ -61,9 +61,9 @@ fun ProfileScreen(
             }
 
             is ProfileUiState.Deleting -> {
-                Text(text = "Eyði færslu, augnablik", fontSize = 24.sp)
+                Text(text = "Færslu eytt :)", fontSize = 24.sp)
                 LaunchedEffect(key1 = Unit) {
-                    delay(500)
+                    delay(100)
                     profileViewModel.getProfileRounds(
                         navViewModel.navUiState.username,
                         navViewModel.navUiState.authToken
