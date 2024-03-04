@@ -64,7 +64,7 @@ class ProfileViewModel : ViewModel() {
         }
         var average = scores.sorted()
         if (average.size > 20) {
-            average = scores.reversed().subList(0, 20).sorted()
+            average = scores.subList(0, 20).sorted()
         }
         if (average.size > 8) {
             average = average.subList(0, 9)
