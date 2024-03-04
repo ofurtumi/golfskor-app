@@ -77,13 +77,10 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun deleteRound(roundId: Int, userId: Int, authToken: String) {
-        Log.d("Deleting by roundId", "$roundId")
         viewModelScope.launch {
 
             profileUiState = try {
-                Log.d("Deleting by roundId", "$roundId")
-                println("asdf")
-                val result = GolfSkorApi.retrofitService.deleteRound(
+                GolfSkorApi.retrofitService.deleteRound(
                     "Bearer $authToken",
                     roundId,
                     userId,
@@ -91,7 +88,6 @@ class ProfileViewModel : ViewModel() {
                 ProfileUiState.Deleting
 
             } catch (e: Exception) {
-                Log.e("Error deleting round", "$roundId", e)
                 ProfileUiState.Error("Villa við að eyða :'(")
             }
         }
