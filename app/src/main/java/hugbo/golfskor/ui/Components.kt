@@ -30,7 +30,6 @@ import hugbo.golfskor.entities.previewCourse
 import hugbo.golfskor.entities.previewRound
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.CourseUiState
-import hugbo.golfskor.ui.viewModels.NavUiState
 
 @Composable
 fun GolfRound(
@@ -175,10 +174,10 @@ fun GolfCourseList(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Button(onClick = { navController.navigate("Rounds/new/${course.id}") }) {
+                Button(onClick = { navController.navigate("Rounds/new/${course.id}/${course.courseName}") }) {
                     Text(text = "9 Holur")
                 }
-                Button(onClick = { navController.navigate("Rounds/big/${course.id}") }) {
+                Button(onClick = { navController.navigate("Rounds/big/${course.id}/${course.courseName}") }) {
                     Text(text = "18 Holur")
                 }
             }
@@ -188,8 +187,8 @@ fun GolfCourseList(
                 if (round.holes.size > 9) {
                     holes =
                         round.holes.subList(0, 9).joinToString(", ") +
-                        "\n" +
-                        round.holes.subList(9, round.holes.size).joinToString(", ")
+                                "\n" +
+                                round.holes.subList(9, round.holes.size).joinToString(", ")
                 }
                 Line()
                 TextCollection(
@@ -227,4 +226,14 @@ fun GolfCourseListPreview() {
             )
         }
     }
+}
+
+@Composable
+fun ErrorScreen(message: String) {
+    Text(text = "Error: $message", color = MaterialTheme.colorScheme.error)
+}
+
+@Composable
+fun LoadingScreen() {
+    Text(text = "Loading")
 }
