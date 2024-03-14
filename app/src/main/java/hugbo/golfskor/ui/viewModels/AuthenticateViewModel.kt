@@ -10,35 +10,40 @@ import hugbo.golfskor.network.GolfSkorApi
 import kotlinx.coroutines.launch
 
 sealed interface AuthUiState {
-    data object Loading : AuthUiState
+    data object Starting : AuthUiState
+    data object LoginLoading : AuthUiState
+    data object SignupLoading : AuthUiState
     data class Success(val auth: ApiAuth) : AuthUiState
     data object Registered : AuthUiState
-    data class Error(val message: String) : AuthUiState
+    data class Error(val login: Boolean) : AuthUiState
 
 }
 
 class AuthenticateViewModel : ViewModel() {
-    var authUiState: AuthUiState by mutableStateOf(AuthUiState.Loading)
+    var authUiState: AuthUiState by mutableStateOf(AuthUiState.Starting)
         private set
 
+
     fun checkCredentials(username: String, password: String) {
+        authUiState = AuthUiState.LoginLoading
         viewModelScope.launch {
             authUiState = try {
                 val authResult = GolfSkorApi.retrofitService.login(username, password)
                 AuthUiState.Success(authResult)
             } catch (e: Exception) {
-                AuthUiState.Error("Error: ${e.message}")
+                AuthUiState.Error(true)
             }
         }
     }
 
     fun registerUser(username: String, password: String) {
+        authUiState = AuthUiState.SignupLoading
         viewModelScope.launch {
             authUiState = try {
                 GolfSkorApi.retrofitService.register(username, password)
                 AuthUiState.Registered
             } catch (e: Exception) {
-                AuthUiState.Error("Error: ${e.message}")
+                AuthUiState.Error(false)
             }
         }
     }
