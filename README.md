@@ -19,4 +19,3 @@ BASE_URL=<base url>
 
 Til að sjá hvaða bakendur eru í boði má skoða í [`app/src/main/assets/env.example`](./app/src/main/assets/env.example) skránni.
 Ath að til að nota localhost þarf að hafa [golfskor-web-service](https://github.com/ofurtumi/golfskor-web-service/) keyrandi, uppsetning á því má sjá í README þar.
-
