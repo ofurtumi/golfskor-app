@@ -20,14 +20,16 @@ sealed interface RoundUiState {
         val holes: List<Int>,
         val username: String,
         val authToken: String,
-        val buttonText: String
+        val buttonText: String,
+        val courseName: String
     ) : RoundUiState
 
     data class OldRound(
         val round: ApiRound,
         val username: String,
         val authToken: String,
-        val buttonText: String
+        val buttonText: String,
+        val courseName: String
     ) : RoundUiState
 
     data class Success(
@@ -44,6 +46,7 @@ class RoundViewModel(
 ) : ViewModel() {
     val roundType = savedStateHandle.get<String>("type") ?: "new"
     val id = savedStateHandle.get<Int>("id") ?: -1
+    val courseName = savedStateHandle.get<String>("courseName") ?: "Nýr hringur"
 
     var roundUiState: RoundUiState by mutableStateOf(
         RoundUiState.Loading(
@@ -63,17 +66,35 @@ class RoundViewModel(
             roundUiState = try {
                 when (roundType) {
                     "new" -> {
-                        RoundUiState.NewRound(List(9) { 1 }, username, authToken, "Skrá hring")
+                        RoundUiState.NewRound(
+                            List(9) { 1 },
+                            username,
+                            authToken,
+                            "Skrá hring",
+                            courseName
+                        )
                     }
 
                     "big" -> {
-                        RoundUiState.NewRound(List(18) { 1 }, username, authToken, "Skrá hring")
+                        RoundUiState.NewRound(
+                            List(18) { 1 },
+                            username,
+                            authToken,
+                            "Skrá hring",
+                            courseName
+                        )
                     }
 
                     else -> {
                         val oldRound =
                             GolfSkorApi.retrofitService.getRound(roundId)
-                        RoundUiState.OldRound(oldRound, username, authToken, "Uppfæra hring")
+                        RoundUiState.OldRound(
+                            oldRound,
+                            username,
+                            authToken,
+                            "Uppfæra hring",
+                            courseName
+                        )
                     }
                 }
             } catch (e: Exception) {

@@ -81,13 +81,16 @@ fun Nav(
         }
     ) { innerPadding ->
         NavHost(navController = navController, startDestination = "Authenticate") {
-            composable(route = "Rounds/{type}/{id}",
+            composable(route = "Rounds/{type}/{id}/{courseName}",
                 arguments = listOf(
                     navArgument(name = "type") {
                         type = NavType.StringType
                     },
                     navArgument(name = "id") {
                         type = NavType.IntType
+                    },
+                    navArgument(name = "courseName") {
+                        type = NavType.StringType
                     }
                 )) { RoundScreen(innerPadding, navController, navViewModel) }
             composable(route = "Authenticate") {

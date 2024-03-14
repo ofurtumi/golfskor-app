@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import hugbo.golfskor.ui.LoadingScreen
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.NavViewModel
 import hugbo.golfskor.ui.viewModels.RoundUiState
@@ -66,6 +67,12 @@ fun RoundScreen(
 
             is RoundUiState.NewRound -> {
                 var holes by remember(roundUiState.holes) { mutableStateOf(roundUiState.holes) }
+                Text(
+                    roundUiState.courseName,
+                    fontSize = 46.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
 
                 ChooseHoles(holes, { holes = it }, roundUiState.buttonText) {
                     roundViewModel.postRound(
@@ -80,6 +87,12 @@ fun RoundScreen(
             is RoundUiState.OldRound -> {
                 var holes by remember(roundUiState.round.holes) { mutableStateOf(roundUiState.round.holes) }
 
+                Text(
+                    roundUiState.courseName,
+                    fontSize = 46.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
                 ChooseHoles(holes, { holes = it }, roundUiState.buttonText) {
                     roundViewModel.updateRound(
                         holes,
@@ -105,7 +118,10 @@ fun ChooseHoles(
     submitText: String,
     onSubmit: () -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom
+    ) {
         itemsIndexed(holes) { i, hole ->
             Row(
                 modifier = Modifier
