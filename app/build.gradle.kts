@@ -83,4 +83,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     //Logging Network Calls
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    // .env support
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 }

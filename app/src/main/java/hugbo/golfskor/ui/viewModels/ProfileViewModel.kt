@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.entities.ApiRound
@@ -32,17 +31,9 @@ sealed interface ProfileUiState {
     data class Error(val message: String) : ProfileUiState
 }
 
-class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
-    private val userId = savedStateHandle.get<Int>("userId") ?: -1;
-    private val username: String = savedStateHandle.get<String>("username") ?: ""
-    private val authToken: String = savedStateHandle.get<String>("authToken") ?: ""
-
+class ProfileViewModel : ViewModel() {
     var profileUiState: ProfileUiState by mutableStateOf(ProfileUiState.Loading)
         private set
-
-    init {
-        //getProfileRounds(username, authToken)
-    }
 
     fun getProfileRounds(username: String, authToken: String) {
         viewModelScope.launch {
@@ -73,7 +64,7 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         }
         var average = scores.sorted()
         if (average.size > 20) {
-            average = scores.reversed().subList(0, 20).sorted()
+            average = scores.subList(0, 20).sorted()
         }
         if (average.size > 8) {
             average = average.subList(0, 9)
@@ -85,22 +76,18 @@ class ProfileViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         return score - 72.0
     }
 
-    fun deleteRound(roundId: Int) {
-        Log.d("Deleting by roundId",  "$roundId")
+    fun deleteRound(roundId: Int, userId: Int, authToken: String) {
         viewModelScope.launch {
 
             profileUiState = try {
-                Log.d("Deleting by roundId",  "$roundId")
-                println("asdf")
-                 val result = GolfSkorApi.retrofitService.deleteRound(
-                     "Bearer $authToken",
-                     roundId,
-                     userId,
-                 )
+                GolfSkorApi.retrofitService.deleteRound(
+                    "Bearer $authToken",
+                    roundId,
+                    userId,
+                )
                 ProfileUiState.Deleting
 
             } catch (e: Exception) {
-                Log.e("Error deleting round", "$roundId", e)
                 ProfileUiState.Error("Villa við að eyða :'(")
             }
         }

@@ -9,4 +9,8 @@
     <string name="password">Lykilorð</string>
     <string name="edit">Breyta</string>
     <string name="delete">Eyða</string>
+    <string name="auth_logging_in">Reyni að skrá þig inn...</string>
+    <string name="auth_signing_up">Reyni að nýskrá þig...</string>
+    <string name="auth_login_error">Villa við að innskrá notanda, reyndu aftur innan skamms}</string>
+    <string name="auth_register_error">Villa við að nýskrá notanda, reyndu aftur innan skamms}</string>
 </resources>

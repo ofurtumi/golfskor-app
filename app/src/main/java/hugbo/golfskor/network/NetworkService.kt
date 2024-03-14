@@ -5,6 +5,7 @@ import hugbo.golfskor.entities.ApiAuth
 import hugbo.golfskor.entities.ApiCourse
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.entities.ApiUserInfo
+import io.github.cdimascio.dotenv.dotenv
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -18,8 +19,11 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://golfskor.onrender.com" // Production
-//private const val BASE_URL = "http://10.0.2.2:8080"          // Localhost
+val dotenv = dotenv {
+    directory = "/assets"
+    filename = "env"
+}
+private val BASE_URL = dotenv["BASE_URL"] ?: "https://golfskor.onrender.com"
 
 val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
     level = HttpLoggingInterceptor.Level.HEADERS

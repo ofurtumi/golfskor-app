@@ -1,6 +1,5 @@
 package hugbo.golfskor.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,8 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import hugbo.golfskor.R
@@ -30,7 +27,6 @@ import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.GolfRoundHeader
 import hugbo.golfskor.ui.Line
 import hugbo.golfskor.ui.TextCollection
-import hugbo.golfskor.ui.viewModels.NavUiState
 import hugbo.golfskor.ui.viewModels.NavViewModel
 import hugbo.golfskor.ui.viewModels.ProfileUiState
 import hugbo.golfskor.ui.viewModels.ProfileViewModel
@@ -38,23 +34,12 @@ import kotlinx.coroutines.delay
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-fun rememberUIState(navUiState: NavUiState): SavedStateHandle {
-    val savedStateHandle = SavedStateHandle()
-    savedStateHandle["userId"] = navUiState.userId
-    savedStateHandle["authToken"] = navUiState.authToken
-    return savedStateHandle;
-}
-
 @Composable
 fun ProfileScreen(
     innerPadding: PaddingValues,
     navController: NavController,
     navViewModel: NavViewModel,
-    profileViewModel: ProfileViewModel = viewModel() {
-        ProfileViewModel(
-            savedStateHandle = rememberUIState(navViewModel.navUiState),
-        )
-    }
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
 
     val profileUiState = profileViewModel.profileUiState
@@ -74,10 +59,11 @@ fun ProfileScreen(
                     navViewModel.navUiState.authToken
                 )
             }
+
             is ProfileUiState.Deleting -> {
-                Text(text = "Eyði færslu, augnablik", fontSize = 24.sp)
+                Text(text = "Færslu eytt :)", fontSize = 24.sp)
                 LaunchedEffect(key1 = Unit) {
-                    delay(500)
+                    delay(100)
                     profileViewModel.getProfileRounds(
                         navViewModel.navUiState.username,
                         navViewModel.navUiState.authToken
@@ -92,8 +78,14 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(
                     rounds = profileUiState.rounds,
-                    editFun = {roundid -> navController.navigate("Rounds/old/${roundid}/${navViewModel.navUiState.username}/${navViewModel.navUiState.userId}/${navViewModel.navUiState.authToken}") },
-                    deleteFun = { roundId -> profileViewModel.deleteRound(roundId) }
+                    editFun = { roundId, courseName -> navController.navigate("Rounds/old/${roundId}/${courseName}") },
+                    deleteFun = { roundId ->
+                        profileViewModel.deleteRound(
+                            roundId,
+                            navViewModel.navUiState.userId,
+                            navViewModel.navUiState.authToken
+                        )
+                    }
                 )
             }
 
@@ -121,10 +113,17 @@ fun ProfileGolfRound(
     deleteAction: () -> Unit = { },
 ) {
     Column {
+        var holes = round.holes.joinToString(", ")
+        if (round.holes.size > 9) {
+            holes =
+                round.holes.subList(0, 9).joinToString(", ") +
+                        "\n" +
+                        round.holes.subList(9, round.holes.size).joinToString(", ")
+        }
         TextCollection(
             listOf(
                 round.courseName,
-                round.holes.joinToString(", "),
+                holes,
                 round.score.toString(),
             )
         )
@@ -152,7 +151,7 @@ fun ProfileGolfRound(
 @Composable
 fun ProfileGolfRoundList(
     rounds: List<ApiRound>,
-    editFun: (Int) -> Unit,
+    editFun: (Int, String) -> Unit,
     deleteFun: (Int) -> Unit = { }
 ) {
     LazyColumn {
@@ -161,7 +160,7 @@ fun ProfileGolfRoundList(
             Line()
             ProfileGolfRound(
                 round,
-                editAction = { editFun(round.id) },
+                editAction = { editFun(round.id, round.courseName) },
                 deleteAction = { deleteFun(round.id) }
             )
         }

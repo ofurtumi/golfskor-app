@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +43,6 @@ fun AuthenticateScreen(
     navViewModel: NavViewModel,
     authViewModel: AuthenticateViewModel = viewModel(),
 ) {
-    // val authUiState by authViewModel.uiState.collectAsState()
     val authUiState = authViewModel.authUiState
     val appName = stringResource(R.string.app_name)
     val defaultPadding = Modifier.padding(16.dp, 8.dp)
@@ -62,9 +62,27 @@ fun AuthenticateScreen(
         Spacer(modifier = defaultPadding)
 
         when (authUiState) {
-            is AuthUiState.Loading -> {
+            is AuthUiState.Starting -> {
                 Text(
                     stringResource(R.string.auth_please_login),
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            is AuthUiState.LoginLoading -> {
+                Text(
+                    stringResource(R.string.auth_logging_in),
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            is AuthUiState.SignupLoading -> {
+                Text(
+                    stringResource(R.string.auth_signing_up),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center
@@ -77,7 +95,7 @@ fun AuthenticateScreen(
                     authUiState.auth.id,
                     authUiState.auth.authToken
                 )
-                navController.navigate("Profile/${authUiState.auth.username}/${authUiState.auth.authToken}")
+                navController.navigate("Profile")
             }
 
             is AuthUiState.Registered -> {
@@ -91,7 +109,10 @@ fun AuthenticateScreen(
 
             is AuthUiState.Error -> {
                 Text(
-                    text = stringResource(R.string.auth_error),
+                    text = stringResource(
+                        if (authUiState.login) R.string.auth_login_error
+                        else R.string.auth_register_error
+                    ),
                     color = MaterialTheme.colorScheme.error,
                     fontSize = 24.sp,
                     modifier = Modifier.padding(16.dp),
@@ -178,7 +199,10 @@ fun AuthenticateInputs(
         singleLine = true,
         placeholder = { Text(stringResource(R.string.password)) },
         visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
         isError = isAuthError
     )
 }
