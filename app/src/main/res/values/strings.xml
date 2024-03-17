@@ -11,6 +11,9 @@
     <string name="delete">Eyða</string>
     <string name="auth_logging_in">Reyni að skrá þig inn...</string>
     <string name="auth_signing_up">Reyni að nýskrá þig...</string>
-    <string name="auth_login_error">Villa við að innskrá notanda, reyndu aftur innan skamms}</string>
-    <string name="auth_register_error">Villa við að nýskrá notanda, reyndu aftur innan skamms}</string>
+    <string name="auth_login_error">Villa við að innskrá notanda, reyndu aftur innan skamms</string>
+    <string name="auth_register_error">Villa við að nýskrá notanda, reyndu aftur innan skamms</string>
+    <string name="fetching_data">Sæki gögn...</string>
+    <string name="fetching_courses">Sæki velli...</string>
+    <string name="fetching_rounds">Sæki hringi...</string>
 </resources>
