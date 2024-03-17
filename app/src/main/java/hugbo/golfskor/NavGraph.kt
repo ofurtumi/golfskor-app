@@ -1,6 +1,5 @@
 package hugbo.golfskor
 
-import androidx.compose.foundation.background
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
@@ -9,10 +8,10 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -57,7 +56,6 @@ fun Nav(
             BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primary) {
                 screens.forEach { screen ->
                     BottomNavigationItem(
-                        modifier = Modifier.background(color = MaterialTheme.colorScheme.primary),
                         icon = {
                             Icon(
                                 screen.icon,
@@ -65,7 +63,9 @@ fun Nav(
                                 tint = MaterialTheme.colorScheme.background
                             )
                         },
-                        label = { screen.title },
+                        label = {
+                            Text(screen.title, color = MaterialTheme.colorScheme.background)
+                        },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navController.navigate(screen.route) {
@@ -74,8 +74,9 @@ fun Nav(
                                 }
                                 launchSingleTop = true
                             }
-                        }
-                    )
+                        },
+
+                        )
                 }
             }
         }

@@ -2,14 +2,18 @@ package hugbo.golfskor.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -234,6 +238,34 @@ fun ErrorScreen(message: String) {
 }
 
 @Composable
-fun LoadingScreen() {
-    Text(text = "Loading")
+fun LoadingScreen(message : String = "Sæki gögn...") {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Text(text = message, fontSize = 24.sp)
+        LinearProgressIndicator(
+            modifier = Modifier.width(200.dp),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+
+    }
+}
+
+
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
+@Composable
+fun LoadingScreenPreview() {
+    GolfskorTheme {
+        Surface {
+            LoadingScreen()
+        }
+    }
 }

@@ -26,6 +26,7 @@ import hugbo.golfskor.R
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.GolfRoundHeader
 import hugbo.golfskor.ui.Line
+import hugbo.golfskor.ui.LoadingScreen
 import hugbo.golfskor.ui.TextCollection
 import hugbo.golfskor.ui.viewModels.NavViewModel
 import hugbo.golfskor.ui.viewModels.ProfileUiState
@@ -53,7 +54,7 @@ fun ProfileScreen(
     ) {
         when (profileUiState) {
             is ProfileUiState.Loading -> {
-                Text(text = "Sæki gögn", fontSize = 24.sp)
+                LoadingScreen(stringResource(R.string.fetching_data))
                 profileViewModel.getProfileRounds(
                     navViewModel.navUiState.username,
                     navViewModel.navUiState.authToken

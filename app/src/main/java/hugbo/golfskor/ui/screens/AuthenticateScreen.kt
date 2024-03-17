@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import hugbo.golfskor.R
+import hugbo.golfskor.ui.LoadingScreen
 import hugbo.golfskor.ui.viewModels.AuthUiState
 import hugbo.golfskor.ui.viewModels.AuthenticateViewModel
 import hugbo.golfskor.ui.viewModels.NavViewModel
@@ -72,21 +73,11 @@ fun AuthenticateScreen(
             }
 
             is AuthUiState.LoginLoading -> {
-                Text(
-                    stringResource(R.string.auth_logging_in),
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+                LoadingScreen(stringResource(R.string.auth_logging_in))
             }
 
             is AuthUiState.SignupLoading -> {
-                Text(
-                    stringResource(R.string.auth_signing_up),
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+                LoadingScreen(stringResource(R.string.auth_signing_up))
             }
 
             is AuthUiState.Success -> {
