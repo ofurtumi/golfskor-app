@@ -23,12 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import hugbo.golfskor.R
 import hugbo.golfskor.ui.LoadingScreen
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.NavViewModel
@@ -55,7 +57,7 @@ fun RoundScreen(
     ) {
         when (roundUiState) {
             is RoundUiState.Loading -> {
-                LoadingScreen()
+                LoadingScreen(stringResource(R.string.fetching_rounds))
                 roundViewModel.getRoundOfType(
                     navViewModel.navUiState.username,
                     navViewModel.navUiState.authToken,

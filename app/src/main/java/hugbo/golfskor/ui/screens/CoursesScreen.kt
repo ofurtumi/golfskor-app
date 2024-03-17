@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import hugbo.golfskor.R
 import hugbo.golfskor.ui.ErrorScreen
 import hugbo.golfskor.ui.GolfCourseList
 import hugbo.golfskor.ui.LoadingScreen
@@ -40,7 +42,7 @@ fun CoursesScreen(
             Text(text = "Sækja aftur")
         }
         when (courseUiState) {
-            is CourseUiState.Loading -> LoadingScreen()
+            is CourseUiState.Loading -> LoadingScreen(stringResource(R.string.fetching_courses))
             is CourseUiState.Success -> GolfCourseList(courseUiState, navController)
             is CourseUiState.Error -> ErrorScreen(courseUiState.message)
         }
