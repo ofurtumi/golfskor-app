@@ -75,7 +75,16 @@ fun ProfileScreen(
             is ProfileUiState.Success -> {
                 Text(text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}", fontSize = 54.sp)
                 Spacer(modifier = Modifier.padding(16.dp))
-                Text(text = "Username: ${profileUiState.username}", fontSize = 24.sp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Spilari: ${profileUiState.username}", fontSize = 24.sp)
+                    Button(onClick = { profileViewModel.signOut() }) {
+                        Text("Skrá út")
+                    }
+                }
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(
                     rounds = profileUiState.rounds,
@@ -96,6 +105,10 @@ fun ProfileScreen(
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.error
                 )
+            }
+
+            is ProfileUiState.SignedOut -> {
+                navController.navigate("Authenticate")
             }
         }
     }
