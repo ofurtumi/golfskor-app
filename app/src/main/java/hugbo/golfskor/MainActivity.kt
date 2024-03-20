@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import hugbo.golfskor.data.UserInfoDataStoreService
 import hugbo.golfskor.ui.theme.GolfskorTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UserInfoDataStoreService.init(this)
 
         setContent {
             GolfskorTheme {

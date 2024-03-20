@@ -85,4 +85,6 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     // .env support
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+    // DataStor
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

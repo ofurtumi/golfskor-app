@@ -57,6 +57,12 @@ interface NetworkService {
         @Query("password") password: String
     )
 
+    @POST("api/user/refresh")
+    suspend fun refreshToken(
+        @Query("username") username: String,
+        @Header("Authorization") token: String
+    ): ApiAuth
+
     @GET("api/user/info")
     suspend fun getUserRounds(
         @Query("username") username: String,

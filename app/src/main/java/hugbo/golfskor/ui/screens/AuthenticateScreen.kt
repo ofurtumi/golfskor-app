@@ -63,9 +63,24 @@ fun AuthenticateScreen(
         Spacer(modifier = defaultPadding)
 
         when (authUiState) {
-            is AuthUiState.Starting -> {
+            is AuthUiState.Starting -> {}
+
+            is AuthUiState.RefreshLoading -> {
+                LoadingScreen("Skrái þig aftur inn")
+            }
+
+            is AuthUiState.LoginForm -> {
                 Text(
                     stringResource(R.string.auth_please_login),
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            is AuthUiState.ExpiredToken -> {
+                Text(
+                    stringResource(R.string.auth_expired_token),
                     fontSize = 24.sp,
                     modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center
@@ -112,24 +127,29 @@ fun AuthenticateScreen(
             }
         }
 
-        Spacer(modifier = defaultPadding)
+        when (authUiState) {
+            is AuthUiState.Success, AuthUiState.Starting, AuthUiState.RefreshLoading -> {}
+            else -> {
+                Spacer(modifier = defaultPadding)
 
-        AuthenticateInputs(
-            username = username,
-            password = password,
-            isAuthError = authUiState is AuthUiState.Error,
-            onUpdateUsername = { username = it },
-            onUpdatePassword = { password = it },
-        )
+                AuthenticateInputs(
+                    username = username,
+                    password = password,
+                    isAuthError = authUiState is AuthUiState.Error,
+                    onUpdateUsername = { username = it },
+                    onUpdatePassword = { password = it },
+                )
 
-        Spacer(modifier = defaultPadding)
+                Spacer(modifier = defaultPadding)
 
-        AuthenticateButtons(
-            username,
-            password,
-            { u: String, p: String -> authViewModel.checkCredentials(u, p) },
-            { u: String, p: String -> authViewModel.registerUser(u, p) }
-        )
+                AuthenticateButtons(
+                    username,
+                    password,
+                    { u: String, p: String -> authViewModel.checkCredentials(u, p) },
+                    { u: String, p: String -> authViewModel.registerUser(u, p) }
+                )
+            }
+        }
     }
 }
 

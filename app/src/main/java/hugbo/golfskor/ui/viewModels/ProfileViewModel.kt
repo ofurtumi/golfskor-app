@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import hugbo.golfskor.data.UserInfoDataStoreService
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.network.GolfSkorApi
 import kotlinx.coroutines.launch
@@ -29,6 +30,7 @@ sealed interface ProfileUiState {
     )
 
     data class Error(val message: String) : ProfileUiState
+    data object SignedOut : ProfileUiState
 }
 
 class ProfileViewModel : ViewModel() {
@@ -51,6 +53,13 @@ class ProfileViewModel : ViewModel() {
             } catch (e: Exception) {
                 ProfileUiState.Error("Error: ${e.message}")
             }
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            UserInfoDataStoreService.clearUserInfo()
+            profileUiState = ProfileUiState.SignedOut
         }
     }
 
