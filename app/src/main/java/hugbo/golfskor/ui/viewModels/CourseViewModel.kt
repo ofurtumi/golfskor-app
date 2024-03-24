@@ -61,7 +61,7 @@ class CourseViewModel : ViewModel() {
         return score - 72.0
     }
 
-    fun getGolfCourses(username: String, userId: Int, authToken: String) {
+    fun getGolfCourses(username: String, authToken: String) {
         viewModelScope.launch {
             val userInfo = GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
 

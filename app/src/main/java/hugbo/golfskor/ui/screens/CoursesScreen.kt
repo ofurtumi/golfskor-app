@@ -46,7 +46,6 @@ fun CoursesScreen(
                 LoadingScreen(stringResource(R.string.fetching_courses))
                 courseViewModel.getGolfCourses(
                     navViewModel.navUiState.username,
-                    navViewModel.navUiState.userId,
                     navViewModel.navUiState.authToken
                 )
             }
