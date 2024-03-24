@@ -38,12 +38,21 @@ fun CoursesScreen(
         verticalArrangement = Arrangement.Top
     ) {
 
-        Button(onClick = { courseViewModel.refresh() }) {
-            Text(text = "Sækja aftur")
-        }
         when (courseUiState) {
-            is CourseUiState.Loading -> LoadingScreen(stringResource(R.string.fetching_courses))
-            is CourseUiState.Success -> GolfCourseList(courseUiState, navController)
+            is CourseUiState.Loading -> {
+                LoadingScreen(stringResource(R.string.fetching_courses))
+                courseViewModel.getGolfCourses(
+                    navViewModel.navUiState.username,
+                    navViewModel.navUiState.authToken
+                )
+            }
+
+            is CourseUiState.Success -> GolfCourseList(
+                courseUiState,
+                navController,
+                courseUiState.handicap
+            )
+
             is CourseUiState.Error -> ErrorScreen(courseUiState.message)
         }
     }
