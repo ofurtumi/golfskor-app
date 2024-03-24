@@ -19,7 +19,8 @@ class GPSLocation() {
     fun init(context: Context) {
         this.context = context
         this.locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
+        latitude = location.latitude
+        longitude = location.longitude
         if (checkIfLocationIsEnabled()) {
             try {
                 locationManager.requestLocationUpdates(
