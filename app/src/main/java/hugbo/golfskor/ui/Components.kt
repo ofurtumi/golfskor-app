@@ -34,6 +34,7 @@ import hugbo.golfskor.entities.previewCourse
 import hugbo.golfskor.entities.previewRound
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.CourseUiState
+import hugbo.golfskor.ui.viewModels.ProfileUiState
 
 @Composable
 fun GolfRound(
@@ -163,12 +164,25 @@ fun GolfRoundListPreview() {
 fun GolfCourseList(
     state: CourseUiState.Success,
     navController: NavController,
+    userHandicap: Double
 ) {
     LazyColumn {
         items(state.courses) { course ->
             Text(
                 text = course.courseName,
                 fontSize = 24.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Par: ${course.coursePars.sum()}",
+                fontSize = 16.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Forgjöfin þín er ${(course.coursePars.sum() + userHandicap).toInt()}",
+                fontSize = 16.sp,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
@@ -227,6 +241,7 @@ fun GolfCourseListPreview() {
                     courses = List(2) { previewCourse() }
                 ),
                 navController = rememberNavController(),
+                userHandicap = 54.0
             )
         }
     }
