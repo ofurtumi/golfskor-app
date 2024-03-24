@@ -20,9 +20,6 @@ import hugbo.golfskor.ui.LoadingScreen
 import hugbo.golfskor.ui.viewModels.CourseUiState
 import hugbo.golfskor.ui.viewModels.CourseViewModel
 import hugbo.golfskor.ui.viewModels.NavViewModel
-import hugbo.golfskor.ui.viewModels.ProfileUiState
-import hugbo.golfskor.ui.viewModels.ProfileViewModel
-import kotlin.math.log
 
 @Composable
 fun CoursesScreen(
@@ -30,15 +27,9 @@ fun CoursesScreen(
     navController: NavController,
     navViewModel: NavViewModel,
     courseViewModel: CourseViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel(),
 ) {
     val courseUiState = courseViewModel.courseUiState
-    val profileUiState = profileViewModel.profileUiState
 
-    val userHandicap = if(profileUiState is ProfileUiState.Success) {
-        val handicap: Double = profileUiState.handicap
-        println("Handicap: $handicap")
-    } else 0.0
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,8 +42,21 @@ fun CoursesScreen(
             Text(text = "Sækja aftur")
         }
         when (courseUiState) {
-            is CourseUiState.Loading -> LoadingScreen(stringResource(R.string.fetching_courses))
-            is CourseUiState.Success -> GolfCourseList(courseUiState, navController, userHandicap)
+            is CourseUiState.Loading -> {
+                LoadingScreen(stringResource(R.string.fetching_courses))
+                courseViewModel.getGolfCourses(
+                    navViewModel.navUiState.username,
+                    navViewModel.navUiState.userId,
+                    navViewModel.navUiState.authToken
+                )
+            }
+
+            is CourseUiState.Success -> GolfCourseList(
+                courseUiState,
+                navController,
+                courseUiState.handicap
+            )
+
             is CourseUiState.Error -> ErrorScreen(courseUiState.message)
         }
     }

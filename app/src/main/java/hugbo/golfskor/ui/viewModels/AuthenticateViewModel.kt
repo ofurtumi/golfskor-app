@@ -61,6 +61,7 @@ class AuthenticateViewModel : ViewModel() {
 
     fun registerUser(username: String, password: String) {
         authUiState = AuthUiState.SignupLoading
+
         viewModelScope.launch {
             authUiState = try {
                 GolfSkorApi.retrofitService.register(username, password)

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +33,6 @@ import hugbo.golfskor.entities.previewCourse
 import hugbo.golfskor.entities.previewRound
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.CourseUiState
-import hugbo.golfskor.ui.viewModels.ProfileUiState
 
 @Composable
 fun GolfRound(
@@ -235,9 +233,6 @@ fun GolfCourseListPreview() {
         Surface {
             GolfCourseList(
                 state = CourseUiState.Success(
-                    username = "Tester",
-                    userId = 1,
-                    authToken = "testToken",
                     courses = List(2) { previewCourse() }
                 ),
                 navController = rememberNavController(),
@@ -253,12 +248,14 @@ fun ErrorScreen(message: String) {
 }
 
 @Composable
-fun LoadingScreen(message : String = "Sæki gögn...") {
+fun LoadingScreen(message: String = "Sæki gögn...") {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Text(text = message, fontSize = 24.sp)
         LinearProgressIndicator(
             modifier = Modifier.width(200.dp),

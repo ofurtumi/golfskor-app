@@ -1,13 +1,12 @@
 package hugbo.golfskor.ui.viewModels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.entities.ApiCourse
+import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.network.GolfSkorApi
 import kotlinx.coroutines.launch
 import okio.IOException
@@ -16,28 +15,16 @@ sealed interface CourseUiState {
     data object Loading : CourseUiState
     data class Success(
         val courses: List<ApiCourse>,
-        val username: String,
-        val userId: Int,
-        val authToken: String
+        val handicap: Double = 0.0
     ) :
         CourseUiState
 
     data class Error(val message: String) : CourseUiState
 }
 
-class CourseViewModel(
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    val username = savedStateHandle.get<String>("username") ?: ""
-    val userId = savedStateHandle.get<Int>("userId") ?: -1
-    val authToken = savedStateHandle.get<String>("authToken") ?: ""
+class CourseViewModel : ViewModel() {
     var courseUiState: CourseUiState by mutableStateOf(CourseUiState.Loading)
         private set
-
-    init {
-        getGolfCourses()
-        Log.d("CourseViewModel", "Username: $username, userId: $userId, authToken: $authToken")
-    }
 
     fun refresh() {
         courseUiState = CourseUiState.Loading
@@ -45,18 +32,44 @@ class CourseViewModel(
         viewModelScope.launch {
             courseUiState = try {
                 val listResult = GolfSkorApi.retrofitService.getCourses()
-                CourseUiState.Success(listResult, username, userId, authToken)
+                CourseUiState.Success(listResult)
             } catch (e: IOException) {
                 CourseUiState.Error("Error: ${e.message}")
             }
         }
     }
 
-    private fun getGolfCourses() {
+    private fun calculateHandicap(rounds: List<ApiRound>): Double {
+        val scores = rounds.map {
+            if (it.holes.size <= 9) {
+                it.score * 2
+            } else {
+                it.score
+            }
+        }
+        var average = scores.sorted()
+        if (average.size > 20) {
+            average = scores.subList(0, 20).sorted()
+        }
+        if (average.size > 8) {
+            average = average.subList(0, 9)
+        }
+        var score = 126.0
+        if (average.isNotEmpty()) {
+            score = (average.sum().toFloat() / average.size.toFloat()).toDouble()
+        }
+        return score - 72.0
+    }
+
+    fun getGolfCourses(username: String, userId: Int, authToken: String) {
         viewModelScope.launch {
+            val userInfo = GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
+
+            val handicap = calculateHandicap(userInfo.rounds)
+
             courseUiState = try {
                 val listResult = GolfSkorApi.retrofitService.getCourses()
-                CourseUiState.Success(listResult, username, userId, authToken)
+                CourseUiState.Success(listResult, handicap)
             } catch (e: IOException) {
                 CourseUiState.Error("Error: ${e.message}")
             }
