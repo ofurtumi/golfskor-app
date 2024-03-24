@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.data.UserInfoDataStoreService
 import hugbo.golfskor.entities.ApiRound
+import hugbo.golfskor.service.GPSLocation
 import hugbo.golfskor.network.GolfSkorApi
 import kotlinx.coroutines.launch
 
@@ -19,9 +20,11 @@ sealed interface ProfileUiState {
         val handicap: Double,
         val username: String,
         val userId: Int,
-        val authToken: String
+        val authToken: String,
+        val heat: Double,
+        val wind: Double,
+        val direction: String
     ) : ProfileUiState
-
     data class RoundUpdateRequest(
         val courseId: Int,
         val holes: List<Int>,
@@ -41,6 +44,7 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch {
             profileUiState = try {
                 Log.d("Authorization", "Bearer $authToken")
+                val locInfo = GPSLocation()
                 val userInfoResult =
                     GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
                 ProfileUiState.Success(
@@ -48,12 +52,17 @@ class ProfileViewModel : ViewModel() {
                     calculateHandicap(userInfoResult.rounds),
                     username,
                     userInfoResult.id,
-                    authToken
+                    authToken,
+                    locInfo.getLatitude(),
+                    locInfo.getLongitude(),
+                    locInfo.getDirection()
                 )
+
             } catch (e: Exception) {
                 ProfileUiState.Error("Error: ${e.message}")
             }
         }
+
     }
 
     fun signOut() {
@@ -100,5 +109,10 @@ class ProfileViewModel : ViewModel() {
                 ProfileUiState.Error("Villa við að eyða :'(")
             }
         }
+    }
+    fun getWeather(){
+        val gpsLocation = GPSLocation()
+        //ProfileUiState.Weather.heat =  gpsLocation.getLatitude()
+        //ProfileUiState.Weather.wind = gpsLocation.getLatitude()
     }
 }
