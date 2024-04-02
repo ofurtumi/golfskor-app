@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import hugbo.golfskor.R
-import hugbo.golfskor.entities.ApiLocation
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.ui.GolfRoundHeader
 import hugbo.golfskor.ui.Line
@@ -101,11 +100,7 @@ fun ProfileScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ){
-                    Text(text = "Vindátt: ${profileUiState.direction}")
-                    Button(onClick = { profileViewModel.getWeather() }) {
-                        Text(text = "Veður")
-                        
-                    }
+                    Text(text = "Vindátt: ${profileUiState.direction}", fontSize = 24.sp)
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(
@@ -132,6 +127,14 @@ fun ProfileScreen(
             is ProfileUiState.SignedOut -> {
                 navController.navigate("Authenticate")
             }
+            else  -> {
+                Text(
+                    text = "Skrítin villa átti sér stað...",
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
 
 
         }

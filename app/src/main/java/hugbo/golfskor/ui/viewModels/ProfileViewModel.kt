@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.calculateHandicap
 import hugbo.golfskor.data.UserInfoDataStoreService
+import hugbo.golfskor.entities.ApiLocation
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.service.GPSLocation
 import hugbo.golfskor.network.GolfSkorApi
@@ -45,6 +46,7 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch {
             profileUiState = try {
                 Log.d("Authorization", "Bearer $authToken")
+                getWeather()
                 val locInfo = GPSLocation()
                 val userInfoResult =
                     GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
@@ -54,8 +56,8 @@ class ProfileViewModel : ViewModel() {
                     username,
                     userInfoResult.id,
                     authToken,
-                    locInfo.getLatitude(),
-                    locInfo.getLongitude(),
+                    locInfo.getWind(),
+                    locInfo.getHeat(),
                     locInfo.getDirection()
                 )
 
@@ -89,9 +91,42 @@ class ProfileViewModel : ViewModel() {
             }
         }
     }
-    fun getWeather(){
+    private fun getWeather(){
         val gpsLocation = GPSLocation()
-        //ProfileUiState.Weather.heat =  gpsLocation.getLatitude()
-        //ProfileUiState.Weather.wind = gpsLocation.getLatitude()
+        gpsLocation.locationUpdate()
+        val city: String
+        val lat: Int
+        val lon: Int
+        val gpsLocationInstance = GPSLocation()
+        val apiLocationInstance = ApiLocation(
+            date = "2024-03-24",
+            direction = "North",
+            heat = 24.0,
+            wind = 5.5
+        )
+        gpsLocationInstance.updateWeatherData(apiLocationInstance)
+        val latitude =  gpsLocation.getLatitude()
+        val longitude = gpsLocation.getLongitude()
+        lat = (latitude - 64).toInt()
+        lon = (longitude - 21).toInt()
+
+        city = if(lat < 0 && lon < 0) {
+            "rvk"
+        }else {
+            ""
+        }
+
+        viewModelScope.launch {
+
+            profileUiState = try {
+                GolfSkorApi.retrofitService.getWeather(
+                    city
+                )
+                ProfileUiState.Loading
+
+            } catch (e: Exception) {
+                ProfileUiState.Error("Villa við að sækja veðrið :'(")
+            }
+        }
     }
 }

@@ -4,7 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiLocation(
-    val Latitude: Double,
-    val Longitude: Double
+    val date: String,
+    val wind: Double,
+    val direction: String,
+    val heat: Double
 
 )
