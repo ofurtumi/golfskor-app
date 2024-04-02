@@ -71,6 +71,7 @@ fun RoundScreen(
                 var holes by remember(roundUiState.holes) { mutableStateOf(roundUiState.holes) }
                 Text(
                     roundUiState.courseName,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 46.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
@@ -91,6 +92,7 @@ fun RoundScreen(
 
                 Text(
                     roundUiState.courseName,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 46.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
