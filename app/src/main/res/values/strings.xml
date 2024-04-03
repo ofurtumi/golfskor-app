@@ -17,4 +17,6 @@
     <string name="fetching_data">Sæki gögn...</string>
     <string name="fetching_courses">Sæki velli...</string>
     <string name="fetching_rounds">Sæki hringi...</string>
+    <string name="location_not_enabled">Staðsetning er ekki virkjuð</string>
+    <string name="permission_not_granted">Villa við að sækja staðsetningu</string>
 </resources>

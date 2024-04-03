@@ -3,6 +3,7 @@ package hugbo.golfskor.network
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import hugbo.golfskor.entities.ApiAuth
 import hugbo.golfskor.entities.ApiCourse
+import hugbo.golfskor.entities.ApiLocation
 import hugbo.golfskor.entities.ApiRound
 import hugbo.golfskor.entities.ApiUserInfo
 import io.github.cdimascio.dotenv.dotenv
@@ -96,6 +97,12 @@ interface NetworkService {
         @Query("roundId") roundId: Int,
         @Query("userId") userId: Int
     ): Response<Void>
+
+    @GET("/weather")
+    suspend fun getWeather(
+        @Header("Authorization") authToken: String,
+        @Query("city") city: String
+    ): ApiLocation
 }
 
 object GolfSkorApi {

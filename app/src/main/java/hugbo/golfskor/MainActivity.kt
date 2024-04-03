@@ -8,12 +8,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import hugbo.golfskor.data.UserInfoDataStoreService
+import hugbo.golfskor.service.GPSLocation
 import hugbo.golfskor.ui.theme.GolfskorTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val gpsLocation = GPSLocation()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UserInfoDataStoreService.init(this)
+        gpsLocation.startLocationUpdates(this)
+
 
         setContent {
             GolfskorTheme {
@@ -25,6 +30,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        gpsLocation.stopLocationUpdates()
     }
 }
 
