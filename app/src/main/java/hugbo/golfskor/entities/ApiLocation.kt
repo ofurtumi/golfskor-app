@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApiLocation(
     val date: String,
-    val wind: Double,
+    val windspeed: Double,
     val direction: String,
-    val heat: Double
+    val temperature: Double
 
 )

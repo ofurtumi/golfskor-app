@@ -1,6 +1,5 @@
 package hugbo.golfskor.service
 
-
 import android.content.Context
 import android.location.LocationManager
 import android.location.LocationListener
@@ -9,6 +8,7 @@ import android.widget.Toast
 import hugbo.golfskor.R
 import hugbo.golfskor.entities.ApiLocation
 import java.lang.ref.WeakReference
+import android.util.Log
 
 class GPSLocation {
 
@@ -27,13 +27,16 @@ class GPSLocation {
     }
 
     fun updateWeatherData(apiLocation: ApiLocation) {
-        this.heat = apiLocation.heat
-        this.wind = apiLocation.wind
+        Log.d("GPSLocation", "Updating weather data");
+        this.heat = apiLocation.temperature
+        this.wind = apiLocation.windspeed
         this.direction = apiLocation.direction
         this.date = apiLocation.date
+
+        Log.d("GPSLocation", "New values - Heat: " + heat + ", Wind: " + wind + ", Direction: " + direction + ", Date: " + date);
     }
     fun locationUpdate() {
-        if (checkIfLocationIsEnabled() && contextRef != null) {
+        if (::locationManager.isInitialized && checkIfLocationIsEnabled() && contextRef != null) {
             try {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -42,8 +45,13 @@ class GPSLocation {
                     locationListener
                 )
             } catch (ex: SecurityException) {
-                // Maybe supposed to be empty?, don't know how to handle if phone does not allow gps
+
             }
+        } else {
+            heat = 0.0
+            wind = 0.0
+            direction = "NaN"
+            date = "NaN"
         }
     }
 
@@ -65,7 +73,9 @@ class GPSLocation {
     }
 
     fun stopLocationUpdates() {
-        locationManager.removeUpdates(locationListener)
+        if (::locationManager.isInitialized) {
+            locationManager.removeUpdates(locationListener)
+        }
     }
 
     fun checkIfLocationIsEnabled(): Boolean {
@@ -92,7 +102,7 @@ class GPSLocation {
             "V" -> "Vestur"
             "S" -> "Suður"
             "N" -> "Norður"
-            else -> "NaN"
+            else -> direction
         }
     }
 

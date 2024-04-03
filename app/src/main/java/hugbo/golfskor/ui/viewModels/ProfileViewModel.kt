@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 sealed interface ProfileUiState {
     data object Loading : ProfileUiState
     data object Deleting : ProfileUiState
+
     data class Success(
         val rounds: List<ApiRound>,
         val handicap: Double,
@@ -27,6 +28,7 @@ sealed interface ProfileUiState {
         val wind: Double,
         val direction: String
     ) : ProfileUiState
+
     data class RoundUpdateRequest(
         val courseId: Int,
         val holes: List<Int>,
@@ -46,8 +48,13 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch {
             profileUiState = try {
                 Log.d("Authorization", "Bearer $authToken")
-                getWeather()
+
                 val locInfo = GPSLocation()
+                val latitude = locInfo.getLatitude()
+                val longitude = locInfo.getLongitude()
+                val city = calculateCityFromCoordinates(latitude, longitude)
+                val weatherResponse = GolfSkorApi.retrofitService.getWeather(authToken, city)
+
                 val userInfoResult =
                     GolfSkorApi.retrofitService.getUserRounds(username, "Bearer $authToken")
                 ProfileUiState.Success(
@@ -56,11 +63,10 @@ class ProfileViewModel : ViewModel() {
                     username,
                     userInfoResult.id,
                     authToken,
-                    locInfo.getWind(),
-                    locInfo.getHeat(),
-                    locInfo.getDirection()
+                    weatherResponse.windspeed,
+                    weatherResponse.temperature,
+                    weatherResponse.direction
                 )
-
             } catch (e: Exception) {
                 ProfileUiState.Error("Error: ${e.message}")
             }
@@ -91,42 +97,10 @@ class ProfileViewModel : ViewModel() {
             }
         }
     }
-    private fun getWeather(){
-        val gpsLocation = GPSLocation()
-        gpsLocation.locationUpdate()
-        val city: String
-        val lat: Int
-        val lon: Int
-        val gpsLocationInstance = GPSLocation()
-        val apiLocationInstance = ApiLocation(
-            date = "2024-03-24",
-            direction = "North",
-            heat = 24.0,
-            wind = 5.5
-        )
-        gpsLocationInstance.updateWeatherData(apiLocationInstance)
-        val latitude =  gpsLocation.getLatitude()
-        val longitude = gpsLocation.getLongitude()
-        lat = (latitude - 64).toInt()
-        lon = (longitude - 21).toInt()
 
-        city = if(lat < 0 && lon < 0) {
-            "rvk"
-        }else {
-            ""
-        }
-
-        viewModelScope.launch {
-
-            profileUiState = try {
-                GolfSkorApi.retrofitService.getWeather(
-                    city
-                )
-                ProfileUiState.Loading
-
-            } catch (e: Exception) {
-                ProfileUiState.Error("Villa við að sækja veðrið :'(")
-            }
-        }
+    private fun calculateCityFromCoordinates(lat: Double, lon: Double): String {
+        val latInt = (lat - 64).toInt()
+        val lonInt = (lon - 21).toInt()
+        return if (latInt < 0 && lonInt < 0) "rvk" else ""
     }
 }

@@ -80,26 +80,24 @@ fun ProfileScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Spilari: ${profileUiState.username}", fontSize = 24.sp)
                     Button(onClick = { profileViewModel.signOut() }) {
                         Text("Skrá út")
                     }
-
-
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ){
+                    Text(text = "Spilari: ${profileUiState.username}", fontSize = 24.sp)
                     Text(text = "Hiti: ${profileUiState.heat} °C", fontSize = 24.sp)
-                    Text(text = "Vindur: ${profileUiState.wind} m/s", fontSize = 24.sp)
                 }
                 Row (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ){
+                    Text(text = "Vindur: ${profileUiState.wind} m/s", fontSize = 24.sp)
                     Text(text = "Vindátt: ${profileUiState.direction}", fontSize = 24.sp)
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
@@ -118,7 +116,7 @@ fun ProfileScreen(
 
             is ProfileUiState.Error -> {
                 Text(
-                    text = "Villa átti sér stað...",
+                    text = profileUiState.message,
                     fontSize = 24.sp,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -127,16 +125,6 @@ fun ProfileScreen(
             is ProfileUiState.SignedOut -> {
                 navController.navigate("Authenticate")
             }
-            else  -> {
-                Text(
-                    text = "Skrítin villa átti sér stað...",
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-
-
-
         }
     }
 }

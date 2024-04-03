@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UserInfoDataStoreService.init(this)
+        gpsLocation.startLocationUpdates(this)
 
 
         setContent {
@@ -28,12 +29,6 @@ class MainActivity : ComponentActivity() {
                     Nav()
                 }
             }
-        }
-    }
-    override fun onStart() {
-        super.onStart()
-        if (gpsLocation.checkIfLocationIsEnabled()) {
-            gpsLocation.startLocationUpdates(this)
         }
     }
 

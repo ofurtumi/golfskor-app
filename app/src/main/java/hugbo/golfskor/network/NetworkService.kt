@@ -98,8 +98,9 @@ interface NetworkService {
         @Query("userId") userId: Int
     ): Response<Void>
 
-    @GET("api/weather")
+    @GET("/weather")
     suspend fun getWeather(
+        @Header("Authorization") authToken: String,
         @Query("city") city: String
     ): ApiLocation
 }
