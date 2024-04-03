@@ -22,7 +22,7 @@ import retrofit2.http.Query
 
 val dotenv = dotenv {
     directory = "/assets"
-    filename = "env.example"
+    filename = "env"
 }
 private val BASE_URL = dotenv["BASE_URL"] ?: "https://golfskor.onrender.com"
 
