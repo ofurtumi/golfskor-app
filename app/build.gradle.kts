@@ -75,6 +75,7 @@ dependencies {
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
     androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
     implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
