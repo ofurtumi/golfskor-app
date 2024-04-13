@@ -36,7 +36,23 @@ import hugbo.golfskor.ui.viewModels.AuthUiState
 import hugbo.golfskor.ui.viewModels.AuthenticateViewModel
 import hugbo.golfskor.ui.viewModels.NavViewModel
 
-
+/**
+ * Composable function that provides a user interface for authentication.
+ *
+ * This screen includes components for displaying authentication status, input fields for username and password,
+ * and buttons for submitting these credentials for either login or registration. The function reacts dynamically
+ * to the current authentication state provided by {@code authViewModel}, adjusting displayed elements accordingly.
+ *
+ * Depending on the state of authentication (e.g., initial, loading, success, error), different UI elements are
+ * displayed. This function also handles navigation after successful authentication by updating user information
+ * in {@code navViewModel} and navigating to the profile screen.
+ *
+ * @param innerPadding Padding applied to the outermost column for layout purposes.
+ * @param navController Controller for managing navigation between composables.
+ * @param navViewModel ViewModel associated with navigation, used here to update user information.
+ * @param authViewModel ViewModel that holds the authentication state and business logic. Defaults to a new viewModel
+ *                      instance scoped to the current composable if not provided.
+ */
 @Composable
 fun AuthenticateScreen(
     innerPadding: PaddingValues,
@@ -152,7 +168,19 @@ fun AuthenticateScreen(
         }
     }
 }
-
+/**
+ * Composable function that displays login and registration buttons.
+ *
+ * This function renders two buttons: one for logging in and another for signing up. Each button
+ * is enabled only when both the username and password fields are not empty. This function handles
+ * user actions for login and registration by invoking callback functions when the respective button
+ * is pressed, passing the username and password as arguments.
+ *
+ * @param username A string representing the username input by the user. The buttons are active only if this is non-empty.
+ * @param password A string representing the password input by the user. The buttons are active only if this is non-empty.
+ * @param onLogin A lambda function that is invoked with username and password as parameters when the login button is clicked.
+ * @param onSignup A lambda function that is invoked with username and password as parameters when the signup button is clicked.
+ */
 @Composable
 fun AuthenticateButtons(
     username: String,
@@ -185,7 +213,21 @@ fun AuthenticateButtons(
         }
     }
 }
-
+/**
+ * Composable function that renders input fields for username and password.
+ *
+ * This function displays two outlined text fields: one for entering the username and another for entering the password.
+ * Each field will update its respective state variable when the text changes, using the provided callback functions.
+ * Additionally, both input fields can visually indicate an authentication error through the {@code isError} parameter,
+ * which alters the appearance of the text fields to show an error state.
+ *
+ * @param username The current value of the username input field.
+ * @param password The current value of the password input field.
+ * @param isAuthError Optional boolean that, when true, indicates that there is an authentication error, affecting
+ *                    the visual state of the text fields. Defaults to false.
+ * @param onUpdateUsername A lambda function that updates the username state variable on text change.
+ * @param onUpdatePassword A lambda function that updates the password state variable on text change.
+ */
 @Composable
 fun AuthenticateInputs(
     username: String,
