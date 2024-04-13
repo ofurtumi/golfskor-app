@@ -27,12 +27,40 @@ import hugbo.golfskor.ui.screens.ProfileScreen
 import hugbo.golfskor.ui.screens.RoundScreen
 import hugbo.golfskor.ui.viewModels.NavViewModel
 
+/**
+ * Sealed class representing different screens in the application.
+ *
+ * This sealed class defines specific screens available in the application, encapsulating the routing information,
+ * the title for display purposes, and an icon associated with each screen.
+ *
+ * The class has different data objects for each screen, each providing a unique route, title, and icon:
+ * - {@code Courses}: Represents the courses screen with route 'Courses', title 'Vellir', and an icon indicating a location.
+ * - {@code Profile}: Represents the profile screen with route 'Profile', title 'Prófíll', and an icon for user account.
+ */
 sealed class Screens(val route: String, val title: String, val icon: ImageVector) {
     data object Courses : Screens("Courses", "Vellir", Icons.Filled.LocationOn)
     data object Profile :
         Screens("Profile", "Prófíll", Icons.Filled.AccountCircle)
 }
 
+/**
+ * Composable function that sets up and manages the navigation for the application.
+ *
+ * This function creates a navigation controller and defines the navigation graph for the application. It uses a `Scaffold`
+ * to provide a consistent structure across screens, including a bottom navigation bar. The bottom navigation bar is
+ * populated with icons and labels defined in the `Screens` enum, facilitating navigation between different sections
+ * of the app such as Courses and Profile.
+ *
+ * The navigation setup excludes the bottom bar on the 'Authenticate' route to provide a full-screen experience for
+ * login or registration processes. Each screen is defined as a composable within the `NavHost`, which handles the
+ * transitions and state management during navigation.
+ *
+ * This function also handles the navigation logic, ensuring that navigation events respect the application's overall
+ * state, such as maintaining the state or resetting navigation when navigating to the top-level destinations.
+ *
+ * @param navViewModel ViewModel that handles the navigation state and data for the application. Defaults to a new instance
+ *                     remembered across recompositions if not provided.
+ */
 @Composable
 fun Nav(
     navViewModel: NavViewModel = remember { NavViewModel() }
