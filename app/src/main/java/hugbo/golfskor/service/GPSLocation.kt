@@ -9,6 +9,8 @@ import hugbo.golfskor.R
 import hugbo.golfskor.entities.ApiLocation
 import java.lang.ref.WeakReference
 import android.util.Log
+import hugbo.golfskor.network.GolfSkorApi
+import hugbo.golfskor.ui.viewModels.ProfileUiState
 
 class GPSLocation {
 
@@ -27,14 +29,9 @@ class GPSLocation {
     }
 
     fun updateWeatherData(apiLocation: ApiLocation) {
-        Log.d("GPSLocation", "Updating weather data");
-        this.heat = apiLocation.temperature
-        this.wind = apiLocation.windspeed
-        this.direction = apiLocation.direction
-        this.date = apiLocation.date
 
-        Log.d("GPSLocation", "New values - Heat: " + heat + ", Wind: " + wind + ", Direction: " + direction + ", Date: " + date);
     }
+
     fun locationUpdate() {
         if (::locationManager.isInitialized && checkIfLocationIsEnabled() && contextRef != null) {
             try {
@@ -67,7 +64,7 @@ class GPSLocation {
                     locationListener
                 )
             } catch (ex: SecurityException) {
-                showToast(context,R.string.permission_not_granted)
+                showToast(context, R.string.permission_not_granted)
             }
         }
     }
@@ -83,12 +80,13 @@ class GPSLocation {
             locationManager.isLocationEnabled
         } else {
             val isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-            val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+            val isNetworkEnabled =
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
             isGPSEnabled || isNetworkEnabled
         }
     }
 
-    private fun showToast(context: Context,message: Int) {
+    private fun showToast(context: Context, message: Int) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -96,17 +94,13 @@ class GPSLocation {
 
     fun getLongitude(): Double = longitude
 
-    fun getDirection(): String {
-        return when(direction) {
+    fun getDirection(wind: String): String {
+        return when (wind) {
             "A" -> "Austur"
             "V" -> "Vestur"
             "S" -> "Suður"
             "N" -> "Norður"
-            else -> direction
+            else -> wind
         }
     }
-
-    fun getHeat(): Double = heat
-
-    fun getWind(): Double = wind
 }

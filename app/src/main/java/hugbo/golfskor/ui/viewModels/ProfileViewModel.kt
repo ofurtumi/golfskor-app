@@ -65,7 +65,7 @@ class ProfileViewModel : ViewModel() {
                     authToken,
                     weatherResponse.windspeed,
                     weatherResponse.temperature,
-                    weatherResponse.direction
+                    locInfo.getDirection(weatherResponse.direction)
                 )
             } catch (e: Exception) {
                 ProfileUiState.Error("Error: ${e.message}")
