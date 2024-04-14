@@ -20,7 +20,25 @@ import hugbo.golfskor.ui.LoadingScreen
 import hugbo.golfskor.ui.viewModels.CourseUiState
 import hugbo.golfskor.ui.viewModels.CourseViewModel
 import hugbo.golfskor.ui.viewModels.NavViewModel
-
+/**
+ * Composable function that displays the main screen for viewing golf courses.
+ *
+ * This screen shows different UI states based on the data loading and fetching process from a remote server.
+ * It uses the {@code courseViewModel} to manage and observe course data states such as loading, success, and error.
+ * Depending on the state of {@code courseUiState}, this screen may display a loading animation, a list of golf courses,
+ * or an error message. The screen's layout and behavior are dynamically adjusted based on these states.
+ *
+ * - When in the 'Loading' state, it triggers data fetching through {@code courseViewModel} and shows a loading screen.
+ * - In the 'Success' state, it displays a list of golf courses, which users can interact with.
+ * - The 'Error' state shows an appropriate error message.
+ *
+ * The function also manages padding and alignment to ensure the UI is well-organized and visually appealing.
+ *
+ * @param innerPadding Padding to apply to the content inside the screen.
+ * @param navController Controller for navigating between screens.
+ * @param navViewModel ViewModel that holds navigation and user session data.
+ * @param courseViewModel ViewModel for managing golf course data. It provides and updates the course UI state.
+ */
 @Composable
 fun CoursesScreen(
     innerPadding: PaddingValues,

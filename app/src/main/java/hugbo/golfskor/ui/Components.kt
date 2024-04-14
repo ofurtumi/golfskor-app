@@ -34,6 +34,15 @@ import hugbo.golfskor.entities.previewRound
 import hugbo.golfskor.ui.theme.GolfskorTheme
 import hugbo.golfskor.ui.viewModels.CourseUiState
 
+/**
+ * Displays the details of a single golf round using a predefined theme.
+ *
+ * This function is designed to present the information of a golf round within a themed Surface component.
+ * It encapsulates the round's username, course name, and score within a TextCollection composable.
+ *
+ * @param round An instance of ApiRound, which contains data about a golf round including the username of the
+ *              player, the name of the course, and the score. Defaults to a preview round if not provided.
+ */
 @Composable
 fun GolfRound(
     round: ApiRound = previewRound()
@@ -70,6 +79,15 @@ fun GolfRoundPreview() {
     }
 }
 
+/**
+ * Composable function that displays a header for golf round information.
+ *
+ * This function is designed to present header labels for sections of a golf app interface, such as a list of golf rounds.
+ * It utilizes the `TextCollection` composable to arrange the header strings horizontally.
+ *
+ * @param strings A list of strings that represent different header titles (e.g., "Course", "Holes", "Score").
+ *                These are displayed as key identifiers for data columns in a table or list.
+ */
 @Composable
 fun GolfRoundHeader(strings: List<String>) {
     TextCollection(
@@ -96,6 +114,19 @@ fun GolfRoundHeaderPreview() {
     }
 }
 
+/**
+ * Composable function that displays a collection of text elements in a row.
+ *
+ * This function creates a horizontal row of text elements, spaced evenly across the available width.
+ *
+ * @param strings A list of strings that are to be displayed as individual text elements within the row.
+ * @param modifier A `Modifier` applied to each text element in the collection. It can be used to adjust the layout,
+ *                 appearance, or add behavior to the text elements.
+ * @param style A `TextStyle` that will be applied to all text elements in the collection. It allows for consistent
+ *              text formatting across all items.
+ * @param color A `Color` applied to the text elements. If unspecified, the text color defaults to the ambient
+ *              color from the theme.
+ */
 @Composable
 fun TextCollection(
     strings: List<String>,
@@ -117,6 +148,12 @@ fun TextCollection(
     }
 }
 
+/**
+ * Composable function that creates a horizontal line divider.
+ *
+ * This function provides a simple, styled horizontal line that can be used to separate content visually
+ * in the user interface. The line's color is set to the secondary color of the current theme.
+ */
 @Composable
 fun Line() {
     Divider(
@@ -128,6 +165,16 @@ fun Line() {
     )
 }
 
+/**
+ * Composable function that displays a list of golf rounds in a lazy loading column.
+ *
+ * This function uses a `LazyColumn` to efficiently render a list of golf rounds, making it suitable for handling
+ * potentially large data sets by only rendering items that are currently visible on the screen. Each round is
+ * represented by the `GolfRound` composable, and is separated by a line for clear visual distinction.
+ *
+ * @param rounds A list of `ApiRound` objects representing the data for each golf round. Defaults to a list containing
+ *               three preview rounds if not provided.
+ */
 @Composable
 fun GolfRoundList(
     rounds: List<ApiRound> = List(3) { previewRound() }
@@ -158,6 +205,22 @@ fun GolfRoundListPreview() {
     }
 }
 
+/**
+ * Composable function that displays a list of golf courses and associated rounds.
+ *
+ * This function presents detailed information for each course retrieved from the state, including the course name,
+ * the total par, and the user's adjusted handicap on that course. It also displays options for starting new rounds
+ * of 9 or 18 holes, allowing users to navigate to the corresponding screens for each course.
+ *
+ * Each course entry includes a list of recent rounds played on that course, showing player names, scores, and hole details.
+ * The hole details are formatted to fit nicely within the UI, splitting into two lines if the number exceeds nine holes.
+ *
+ * The layout uses a `LazyColumn` to handle potentially large lists of courses efficiently, only rendering visible items.
+ *
+ * @param state The UI state containing the list of courses and their details, as retrieved from the application's backend.
+ * @param navController Navigation controller for handling screen transitions, allowing users to start new rounds.
+ * @param userHandicap The user's golf handicap, used to calculate adjusted scores for each course.
+ */
 @Composable
 fun GolfCourseList(
     state: CourseUiState.Success,
@@ -242,11 +305,30 @@ fun GolfCourseListPreview() {
     }
 }
 
+/**
+ * Composable function that displays an error message.
+ *
+ * This function creates a simple text-based user interface component that displays an error message. The text is styled
+ * using the error color defined in the application's color scheme, which helps to distinguish the error message visually
+ * from other text in the application.
+ *
+ * @param message The error message to be displayed. This message is prefixed with "Error: " to clearly indicate its nature.
+ */
 @Composable
 fun ErrorScreen(message: String) {
     Text(text = "Error: $message", color = MaterialTheme.colorScheme.error)
 }
 
+/**
+ * Composable function that displays a loading screen with a customizable message and a progress indicator.
+ *
+ * This function creates a user interface component suitable for indicating that data fetching or processing
+ * is in progress. It centers a text message and a horizontal progress bar within the screen. The text message
+ * can be customized, and the progress bar's colors are derived from the current theme, enhancing the visual
+ * integration with the rest of the application.
+ *
+ * @param message The message to be displayed above the progress bar. Defaults to "Sæki gögn..." (Fetching data... in Icelandic).
+ */
 @Composable
 fun LoadingScreen(message: String = "Sæki gögn...") {
     Column(

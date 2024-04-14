@@ -36,7 +36,24 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-
+/**
+ * Composable function that applies a theme to its child composables.
+ *
+ * This function sets up the color scheme based on system preferences for theme (dark or light) and,
+ * if supported and enabled, uses dynamic coloring based on the current wallpaper (Android 12+).
+ * It configures the MaterialTheme with these colors, along with default typography settings.
+ *
+ * Additionally, the function updates system UI settings such as the status bar color to match the
+ * primary color of the chosen theme and sets the status bar text color to ensure good readability
+ * depending on the darkness of the status bar color.
+ *
+ * @param darkTheme Optional boolean parameter that specifies whether to use a dark color scheme.
+ *                  Defaults to the system preference.
+ * @param dynamicColor Optional boolean parameter that, when true and supported by the device, enables
+ *                     dynamic coloring based on the wallpaper colors. Defaults to true.
+ * @param content A lambda representing the child composables that this theme will apply to. This allows
+ *                all content enclosed within the theme to adhere to the defined color and typography settings.
+ */
 @Composable
 fun GolfskorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
