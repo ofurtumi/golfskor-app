@@ -19,6 +19,7 @@ class GPSLocation {
     private var latitude: Double = 8.3
     private var longitude: Double = 14.0
 
+
     /**
      * Defines a location listener that updates the current latitude and longitude whenever a new location is received.
      *
@@ -84,7 +85,6 @@ class GPSLocation {
      *
      * @return {@code true} if location services are enabled; {@code false} otherwise.
      */
-    fun c
     fun checkIfLocationIsEnabled(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             locationManager.isLocationEnabled

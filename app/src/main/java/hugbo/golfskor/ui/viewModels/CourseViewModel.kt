@@ -29,19 +29,6 @@ class CourseViewModel : ViewModel() {
     var courseUiState: CourseUiState by mutableStateOf(CourseUiState.Loading)
         private set
 
-    fun refresh() {
-        courseUiState = CourseUiState.Loading
-
-        viewModelScope.launch {
-            courseUiState = try {
-                val listResult = GolfSkorApi.retrofitService.getCourses()
-                CourseUiState.Success(listResult)
-            } catch (e: IOException) {
-                CourseUiState.Error("Error: ${e.message}")
-            }
-        }
-    }
-
     /**
      * Fetches the list of golf courses and calculates the handicap based on user's previous rounds.
      *

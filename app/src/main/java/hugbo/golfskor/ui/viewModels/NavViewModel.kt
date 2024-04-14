@@ -31,7 +31,4 @@ class NavViewModel : ViewModel() {
         navUiState = NavUiState(username, userId, authToken)
     }
 
-    fun clearUserInfo() {
-        navUiState = NavUiState("", 0, "")
-    }
 }
