@@ -11,7 +11,7 @@ import hugbo.golfskor.entities.ApiRound
  *
  * 1. Adjust scores: Scores are doubled for nine-hole rounds to approximate an 18-hole score.
  * 2. Sorting and limiting: Scores are sorted in ascending order. If more than 20 scores are present,
- *    only the lowest 20 are considered. From these, only the lowest 9 scores are used for further calculations.
+ *    only the last 20 rounds the user has played are considered. From these, only the lowest 8 scores are used for further calculations.
  * 3. Average calculation: The average of these scores is calculated.
  * 4. Handicap calculation: The final handicap is determined by subtracting the base score (typically 72 for a standard
  *    golf course) from the average score.
