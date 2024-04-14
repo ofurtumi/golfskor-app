@@ -84,7 +84,6 @@ class GPSLocation {
      *
      * @return {@code true} if location services are enabled; {@code false} otherwise.
      */
-    fun c
     fun checkIfLocationIsEnabled(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             locationManager.isLocationEnabled
