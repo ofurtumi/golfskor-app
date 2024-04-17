@@ -93,32 +93,45 @@ fun ProfileScreen(
             }
 
             is ProfileUiState.Success -> {
-                Text(text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}", fontSize = 54.sp)
-                Spacer(modifier = Modifier.padding(16.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(onClick = { profileViewModel.signOut() }) {
+                    Text("Spilari: ${profileUiState.username}", fontSize = 24.sp)
+                    Button(
+                        onClick = { profileViewModel.signOut() },
+                    ) {
                         Text("Skrá út")
                     }
                 }
+
+                Spacer(modifier = Modifier.padding(16.dp))
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp, 0.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(text = "Spilari: ${profileUiState.username}", fontSize = 24.sp)
-                    Text(text = "Hiti: ${profileUiState.heat} °C", fontSize = 24.sp)
+                ) {
+                    Text(
+                        text = "Forgjöf: ${roundHandicap(profileUiState.handicap)}",
+                        fontSize = 24.sp
+                    )
+                    Text("Hiti: ${profileUiState.heat} °C", fontSize = 24.sp)
                 }
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp, 0.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(text = "Vindur: ${profileUiState.wind} m/s", fontSize = 24.sp)
-                    Text(text = "Vindátt: ${profileUiState.direction}", fontSize = 24.sp)
+                ) {
+                    Text("Vindur: ${profileUiState.wind} m/s", fontSize = 24.sp)
+                    Text("Vindátt: ${profileUiState.direction}", fontSize = 24.sp)
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 ProfileGolfRoundList(

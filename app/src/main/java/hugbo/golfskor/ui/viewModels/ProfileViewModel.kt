@@ -8,10 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import hugbo.golfskor.calculateHandicap
 import hugbo.golfskor.data.UserInfoDataStoreService
-import hugbo.golfskor.entities.ApiLocation
 import hugbo.golfskor.entities.ApiRound
-import hugbo.golfskor.service.GPSLocation
 import hugbo.golfskor.network.GolfSkorApi
+import hugbo.golfskor.service.GPSLocation
 import kotlinx.coroutines.launch
 
 sealed interface ProfileUiState {
@@ -28,13 +27,6 @@ sealed interface ProfileUiState {
         val wind: Double,
         val direction: String
     ) : ProfileUiState
-
-    data class RoundUpdateRequest(
-        val courseId: Int,
-        val holes: List<Int>,
-        val userId: Int,
-        val authToken: String,
-    )
 
     data class Error(val message: String) : ProfileUiState
     data object SignedOut : ProfileUiState
