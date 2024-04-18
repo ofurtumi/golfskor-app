@@ -10,11 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -64,6 +71,7 @@ fun ProfileScreen(
 ) {
 
     val profileUiState = profileViewModel.profileUiState
+    val deleteAlertOpen = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -93,6 +101,52 @@ fun ProfileScreen(
             }
 
             is ProfileUiState.Success -> {
+                when {
+                    deleteAlertOpen.value -> {
+                        AlertDialog(
+                            icon = {
+                                Icon(
+                                    Icons.Filled.VerifiedUser,
+                                    contentDescription = "Delete User Icon"
+                                )
+                            },
+                            title = {
+                                Text("Ertu viss um að þú viljir eyða notanda?")
+                            },
+                            text = {
+                                Text("Þessa aðgerð er ekki hægt að afturkalla...")
+                            },
+                            onDismissRequest = {
+                                deleteAlertOpen.value = false
+                            },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        deleteAlertOpen.value = false
+                                        profileViewModel.deleteUser()
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.error
+                                    ),
+                                ) {
+                                    Text("Eyða")
+                                }
+                            },
+                            dismissButton = {
+                                Button(
+                                    onClick = {
+                                        deleteAlertOpen.value = false
+                                    },
+                                    modifier = Modifier
+                                ) {
+                                    Text("Hætta við")
+                                }
+                            }
+                        )
+                    }
+                }
+
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,6 +155,14 @@ fun ProfileScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Spilari: ${profileUiState.username}", fontSize = 24.sp)
+                    Button(
+                        onClick = { deleteAlertOpen.value = true },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text("Eyða notanda")
+                    }
                     Button(
                         onClick = { profileViewModel.signOut() },
                     ) {
