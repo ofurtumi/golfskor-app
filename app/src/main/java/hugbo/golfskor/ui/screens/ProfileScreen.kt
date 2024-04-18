@@ -137,7 +137,6 @@ fun ProfileScreen(
                                     onClick = {
                                         deleteAlertOpen.value = false
                                     },
-                                    modifier = Modifier
                                 ) {
                                     Text("Hætta við")
                                 }
