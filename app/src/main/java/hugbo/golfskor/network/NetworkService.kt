@@ -91,6 +91,12 @@ interface NetworkService {
         @Header("Authorization") authToken: String
     ): ApiRound
 
+    @DELETE("api/user")
+    suspend fun deleteUser(
+        @Query("username") username: String,
+        @Header("Authorization") authToken: String
+    )
+
     @DELETE("api/round")
     suspend fun deleteRound(
         @Header("Authorization") authToken: String,

@@ -110,6 +110,14 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    fun deleteUser() {
+        viewModelScope.launch {
+            val (username, authToken) = UserInfoDataStoreService.getUserInfo()
+            GolfSkorApi.retrofitService.deleteUser(username, "Bearer $authToken")
+        }
+        signOut()
+    }
+
     /**
      * Deletes a specific golf round for a user based on the round's identifier.
      *
